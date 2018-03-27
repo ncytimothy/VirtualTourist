@@ -40,25 +40,19 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     // MARK: - Reload Map View
     func reloadMapView(_ coordinate: CLLocationCoordinate2D) {
         
-//        if !annotations.isEmpty {
-//            mapView.removeAnnotations(annotations)
-//            annotations.removeAll()
-//        }
-        
             let lat = coordinate.latitude
             let long = coordinate.longitude
-            
-            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+        
+        let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
             
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
         
             annotations.append(annotation)
         
-        DispatchQueue.main.async {
+        performUIUpdatesOnMain {
             self.mapView.addAnnotations(self.annotations)
         }
-    
     }
     
     // MARK: - Configure longPressRecognizer
