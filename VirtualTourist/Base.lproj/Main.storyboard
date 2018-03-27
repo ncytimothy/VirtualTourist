@@ -28,16 +28,28 @@
         <!--Virtual Tourist-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="TravelLocationsViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <mapView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" id="9GY-2z-EMT">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <gestureRecognizers/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="lPW-2B-fzh" appends="YES" id="yjd-Nf-IXC"/>
+                        </connections>
                     </mapView>
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="9yi-UZ-gDH">
                         <barButtonItem key="rightBarButtonItem" title="Edit" id="OeM-Uy-fEB"/>
                     </navigationItem>
+                    <connections>
+                        <outlet property="longPressRecognizer" destination="lPW-2B-fzh" id="xHj-lb-aRK"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="lPW-2B-fzh">
+                    <connections>
+                        <action selector="longPressOnMap:" destination="BYZ-38-t0r" id="QWP-Lo-192"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="136.80000000000001" y="133.5832083958021"/>
         </scene>
