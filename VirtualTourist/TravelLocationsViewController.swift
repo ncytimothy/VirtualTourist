@@ -34,6 +34,31 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         let touchLocation = sender.location(in: mapView)
         let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
         print("Tapped at lat: \(locationCoordinate.latitude) long: \(locationCoordinate.longitude)")
+        reloadMapView(locationCoordinate)
+    }
+    
+    // MARK: - Reload Map View
+    func reloadMapView(_ coordinate: CLLocationCoordinate2D) {
+        
+//        if !annotations.isEmpty {
+//            mapView.removeAnnotations(annotations)
+//            annotations.removeAll()
+//        }
+        
+            let lat = coordinate.latitude
+            let long = coordinate.longitude
+            
+            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+        
+            annotations.append(annotation)
+        
+        DispatchQueue.main.async {
+            self.mapView.addAnnotations(self.annotations)
+        }
+    
     }
     
     // MARK: - Configure longPressRecognizer
