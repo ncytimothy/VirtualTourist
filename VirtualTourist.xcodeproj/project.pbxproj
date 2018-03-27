@@ -14,6 +14,7 @@
 		727D21FD206AA531001F3A35 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 727D21FB206AA531001F3A35 /* LaunchScreen.storyboard */; };
 		727D2208206AA531001F3A35 /* VirtualTouristTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727D2207206AA531001F3A35 /* VirtualTouristTests.swift */; };
 		727D2213206AA531001F3A35 /* VirtualTouristUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727D2212206AA531001F3A35 /* VirtualTouristUITests.swift */; };
+		727D2223206AA831001F3A35 /* VirtualTourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 727D2221206AA831001F3A35 /* VirtualTourist.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		727D220E206AA531001F3A35 /* VirtualTouristUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VirtualTouristUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		727D2212206AA531001F3A35 /* VirtualTouristUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualTouristUITests.swift; sourceTree = "<group>"; };
 		727D2214206AA531001F3A35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		727D2222206AA831001F3A35 /* VirtualTourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirtualTourist.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 		727D21E6206AA531001F3A35 = {
 			isa = PBXGroup;
 			children = (
+				727D2220206AA809001F3A35 /* Model */,
 				727D21F1206AA531001F3A35 /* VirtualTourist */,
 				727D2206206AA531001F3A35 /* VirtualTouristTests */,
 				727D2211206AA531001F3A35 /* VirtualTouristUITests */,
@@ -123,6 +126,14 @@
 				727D2214206AA531001F3A35 /* Info.plist */,
 			);
 			path = VirtualTouristUITests;
+			sourceTree = "<group>";
+		};
+		727D2220206AA809001F3A35 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				727D2221206AA831001F3A35 /* VirtualTourist.xcdatamodeld */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -261,6 +272,7 @@
 			files = (
 				727D21F5206AA531001F3A35 /* ViewController.swift in Sources */,
 				727D21F3206AA531001F3A35 /* AppDelegate.swift in Sources */,
+				727D2223206AA831001F3A35 /* VirtualTourist.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,6 +570,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		727D2221206AA831001F3A35 /* VirtualTourist.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				727D2222206AA831001F3A35 /* VirtualTourist.xcdatamodel */,
+			);
+			currentVersion = 727D2222206AA831001F3A35 /* VirtualTourist.xcdatamodel */;
+			path = VirtualTourist.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 727D21E7206AA531001F3A35 /* Project object */;
 }
