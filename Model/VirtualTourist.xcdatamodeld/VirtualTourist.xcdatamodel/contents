@@ -7,7 +7,7 @@
         <relationship name="photos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Photo" inverseName="pin" inverseEntity="Photo" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Photo" positionX="-38" positionY="14" width="128" height="58"/>
-        <element name="Pin" positionX="-216" positionY="14" width="128" height="58"/>
+        <element name="Photo" positionX="-38" positionY="14" width="128" height="60"/>
+        <element name="Pin" positionX="-216" positionY="14" width="128" height="60"/>
     </elements>
 </model>
