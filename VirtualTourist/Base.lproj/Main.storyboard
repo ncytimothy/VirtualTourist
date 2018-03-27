@@ -42,6 +42,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="longPressRecognizer" destination="lPW-2B-fzh" id="xHj-lb-aRK"/>
+                        <outlet property="mapView" destination="9GY-2z-EMT" id="7dq-We-NcZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

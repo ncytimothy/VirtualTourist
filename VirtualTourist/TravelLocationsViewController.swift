@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import MapKit
 
-class TravelLocationsViewController: UIViewController {
+class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
 
     // MARK: - Properties
     @IBOutlet var longPressRecognizer: UILongPressGestureRecognizer!
-    var count: Int = 0
+    @IBOutlet var mapView: MKMapView!
+    var annotations = [MKPointAnnotation]()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -24,11 +26,14 @@ class TravelLocationsViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
+    
     // MARK: Actions
-    @IBAction func longPressOnMap(_ sender: Any) {
-        print("Long pressed Veronica \(count)!")
-        count += 1
+    @IBAction func longPressOnMap(_ sender: UILongPressGestureRecognizer) {
+        if sender.state != UIGestureRecognizerState.began { return }
+        let touchLocation = sender.location(in: mapView)
+        let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
+        print("Tapped at lat: \(locationCoordinate.latitude) long: \(locationCoordinate.longitude)")
     }
     
     // MARK: - Configure longPressRecognizer
