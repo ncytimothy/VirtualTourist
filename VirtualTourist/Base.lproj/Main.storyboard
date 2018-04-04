@@ -38,7 +38,11 @@
                         </connections>
                     </mapView>
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="9yi-UZ-gDH">
-                        <barButtonItem key="rightBarButtonItem" title="Edit" id="OeM-Uy-fEB"/>
+                        <barButtonItem key="rightBarButtonItem" title="Add Babe" id="OeM-Uy-fEB">
+                            <connections>
+                                <action selector="addBabe:" destination="BYZ-38-t0r" id="fRk-89-ccl"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="longPressRecognizer" destination="lPW-2B-fzh" id="xHj-lb-aRK"/>

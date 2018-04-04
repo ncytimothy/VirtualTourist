@@ -38,32 +38,67 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpFetchedResultsController()
-        print("\(fetchedResultsController.fetchedObjects)")
+        print("viewDidLoad called")
+        debugPin()
     }
-
-  
-    // MARK: Actions
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("viewWillAppear called")
+        setUpFetchedResultsController()
+        debugPin()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        fetchedResultsController = nil
+    }
+    
+    func debugPin() {
+        if let pins = fetchedResultsController.fetchedObjects {
+            for pin in pins {
+                if let creationDate = pin.creationDate {
+                    print("Creation Date: \(creationDate)")
+                }
+            }
+        }
+    }
+    
+    
+    
+    // MARK: - Actions
     @IBAction func longPressOnMap(_ sender: UILongPressGestureRecognizer) {
         if sender.state != UIGestureRecognizerState.began { return }
         let touchLocation = sender.location(in: mapView)
         let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
         print("Tapped at lat: \(locationCoordinate.latitude) long: \(locationCoordinate.longitude)")
-        addAnnotation(coordinate: locationCoordinate)
-        reloadMapView(locationCoordinate)
-    }
-    
-    // MARK: - Add Annoation
-    func addAnnotation(coordinate: CLLocationCoordinate2D) {
-        let annotation = Pin(context: dataController.viewContext)
-        annotation.longitude = coordinate.longitude
-        annotation.latitude = coordinate.latitude
+        let pin = Pin(context: dataController.viewContext)
+        pin.latitude = locationCoordinate.latitude
+        pin.longitude = locationCoordinate.longitude
+        pin.creationDate = Date()
         do {
             try dataController.viewContext.save()
         } catch {
-            let alert = UIAlertController(title: "Cannot save pin", message: "Pin location cannot saved. Please try again.", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Cannot add pin", message: "Cannot add pin. Please try again later.", preferredStyle: .alert)
+            present(alert, animated: true, completion: nil)
+        }
+        reloadMapView(locationCoordinate)
+    }
+    
+    @IBAction func addBabe(_ sender: Any) {
+        let pin = Pin(context: dataController.viewContext)
+        pin.latitude = 0.0
+        pin.longitude = 0.0
+        pin.creationDate = Date()
+        do {
+            try dataController.viewContext.save()
+            print("babe added!")
+        } catch {
+            let alert = UIAlertController(title: "Cannot add pin", message: "Cannot add pin. Please try again later.", preferredStyle: .alert)
             present(alert, animated: true, completion: nil)
         }
     }
+    
     
     // MARK: - Reload Map View
     func reloadMapView(_ coordinate: CLLocationCoordinate2D) {
