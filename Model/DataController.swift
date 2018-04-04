@@ -11,27 +11,33 @@ import CoreData
 
 // MARK: - Set up CoreData stack
 // Use to create the stack and its functionality
-
-// Here we create a DataController class: since we need to pass the DataController across
-// multiple ViewControllers and we DON'T want mulitple copies
-
-// WANT THE CLASS TO DO THREE THINGS:
-// TODO:
-// 1) TO HOLD A PERSISTENT CONTAINTER INSTANCE
-// (CONTAINER INSTANCE: HELPS WITH CREATION OF THE STACK, AND PROVIDES CONVENIENCE METHODS)
-// 2) TO HELP LOAD THE PERSISTENCE STORE
-// 3) HELP ACCESS THE CONTEXT
-// (CONTEXT: AN INTELLIGENT SCRATCH PAD FOR TEMPORARY MANAGEDOBJECT CREATION
-// AND MANAGEMENT BEFORE STORING PERSISTENTLY)
-
+// Note that the actual load of the persisted data happens in the AppDelegate.swift
 class DataController {
+    
+    // Here we create a DataController class: since we need to pass the DataController across
+    // multiple ViewControllers and we DON'T want mulitple copies
+    
+    // WANT THE CLASS TO DO THREE THINGS:
+    // TODO:
+    // 1) TO HOLD A PERSISTENT CONTAINTER INSTANCE
+    // (CONTAINER INSTANCE: HELPS WITH CREATION OF THE STACK, AND PROVIDES CONVENIENCE METHODS)
+    // 2) TO HELP LOAD THE PERSISTENCE STORE
+    // 3) HELP ACCESS THE CONTEXT
+    // (CONTEXT: AN INTELLIGENT SCRATCH PAD FOR TEMPORARY MANAGEDOBJECT CREATION
+    // AND MANAGEMENT BEFORE STORING PERSISTENTLY)
+    
    // 1) Persistent Container
     let persistentContainer: NSPersistentContainer
     
   // MARK: - Convenience property to access the context for PersistentController
-//    var viewContext: NSManagedObjectContext {
-//        //TODO: Complete returning PersistentController's ViewContext
-//    }
+    // 3) Access the viewContext of the persistent container
+    var viewContext: NSManagedObjectContext {
+        //TODO: Complete returning PersistentController's ViewContext
+        /**
+         The viewContext is associated with the main queue in GCD
+        */
+        return persistentContainer.viewContext
+    }
     
      // Initializer for persistent container
     // TO INITIALIZE THE CONTAINER, YOU NEED A DATA MODEL NAME
