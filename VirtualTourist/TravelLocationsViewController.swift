@@ -87,6 +87,13 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         reloadMapView()
     }
     
+    @IBAction func editTapped(_ sender: Any) {
+        print("adding subview...")
+        let rect = CGRect(x: 20, y: 20, width: 20, height: 20)
+        let view = UIView(frame: rect)
+        self.view.addSubview(view)
+    }
+    
     // MARK: - Add Pin
     func addPin(coordinate: CLLocationCoordinate2D) {
         // 1. ASSOCIATE PIN WITH THE DATA CONTROLLER'S VIEW CONTEXT
@@ -117,8 +124,6 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
             mapView.removeAnnotations(annotations)
             annotations.removeAll()
         }
-        
-        
         
         for pin in pins {
             // 1. RETRIEVE LOCATION DATA FROM PERSISTENT STORE

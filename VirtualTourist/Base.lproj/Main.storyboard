@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -18,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="4Wg-jO-hPS"/>
+                        <segue destination="OiN-3z-2Zj" kind="relationship" relationship="rootViewController" id="RVt-cC-FAQ"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qe9-cL-5lG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -38,7 +39,11 @@
                         </connections>
                     </mapView>
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="9yi-UZ-gDH">
-                        <barButtonItem key="rightBarButtonItem" title="Edit" id="OeM-Uy-fEB"/>
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="OeM-Uy-fEB">
+                            <connections>
+                                <action selector="editTapped:" destination="BYZ-38-t0r" id="daw-CR-Lwt"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="longPressRecognizer" destination="lPW-2B-fzh" id="xHj-lb-aRK"/>
@@ -52,7 +57,36 @@
                     </connections>
                 </pongPressGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="136.80000000000001" y="133.5832083958021"/>
+            <point key="canvasLocation" x="-98" y="889"/>
+        </scene>
+        <!--Test View Controller-->
+        <scene sceneID="vlI-Ls-o7J">
+            <objects>
+                <viewController id="OiN-3z-2Zj" customClass="TestViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ZO6-SS-rSp">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="7UO-Z8-sgE">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="7UO-Z8-sgE" firstAttribute="leading" secondItem="ZO6-SS-rSp" secondAttribute="leading" id="7xX-vV-Tgo"/>
+                            <constraint firstItem="7UO-Z8-sgE" firstAttribute="top" secondItem="ZO6-SS-rSp" secondAttribute="top" id="BjT-E2-dlE"/>
+                            <constraint firstItem="7UO-Z8-sgE" firstAttribute="trailing" secondItem="63e-qp-amy" secondAttribute="trailing" id="efP-9J-tct"/>
+                            <constraint firstItem="7UO-Z8-sgE" firstAttribute="bottom" secondItem="63e-qp-amy" secondAttribute="bottom" id="tYY-J2-YLp"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="63e-qp-amy"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="qqE-JS-0AA">
+                        <barButtonItem key="rightBarButtonItem" title="Ver" id="iar-hV-cmw"/>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cci-LG-Egy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="125.59999999999999" y="133.5832083958021"/>
         </scene>
     </scenes>
 </document>

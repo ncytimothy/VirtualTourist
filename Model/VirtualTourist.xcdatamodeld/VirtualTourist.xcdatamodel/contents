@@ -10,8 +10,12 @@
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="photos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Photo" inverseName="pin" inverseEntity="Photo" syncable="YES"/>
     </entity>
+    <entity name="Region" representedClassName="Region" syncable="YES" codeGenerationType="class">
+        <attribute name="latitudeDelta" optional="YES" attributeType="Double" defaultValueString="0.05" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
     <elements>
         <element name="Photo" positionX="-738" positionY="-144" width="128" height="73"/>
         <element name="Pin" positionX="-902" positionY="-162" width="128" height="103"/>
+        <element name="Region" positionX="-801" positionY="-108" width="128" height="60"/>
     </elements>
 </model>
