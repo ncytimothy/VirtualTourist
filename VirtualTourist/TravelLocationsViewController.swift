@@ -124,23 +124,6 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
                 self.mapView.addAnnotations(self.annotations)
             }
         }
-        
-//            let lat = coordinate.latitude
-//            let long = coordinate.longitude
-//
-//            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
-//
-//            let annotation = MKPointAnnotation()
-//            annotation.coordinate = coordinate
-//
-//        performUIUpdatesOnMain {
-//            self.mapView.addAnnotation(annotation)
-//        }
-    }
-    
-    // MARK: - Configure longPressRecognizer
-    func configureLongPressRecognizer() {
-        
     }
 }
 
