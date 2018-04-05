@@ -118,6 +118,8 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
             annotations.removeAll()
         }
         
+        
+        
         for pin in pins {
             // 1. RETRIEVE LOCATION DATA FROM PERSISTENT STORE
             let lat = pin.latitude
@@ -134,6 +136,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
                 self.region.center = self.center
                 self.region.span = self.coordinateSpan
                 self.mapView.region = self.region
+                print("mapView.center.x: \(self.mapView.region.center.latitude)")
             }
         }
     }
