@@ -22,8 +22,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // us the capability to present a loading UI while persisted data is
         // being retrieved
         
-        dataController.load()
+        // Configure the first view
+        // Get NavigationController from the window's rootViewController
+        // Navigation Controller's top view is the MapView (TravelLocations)
+        // Set travelLoationsViewController' data controller property to the AppDelegate's dataController
+        // This will inject the dataController depency into the TravelLoationsViewController
+        let navigationController = window?.rootViewController as! UINavigationController
+        let travelLoocationsViewController = navigationController.topViewController as! TravelLocationsViewController
+        travelLoocationsViewController.dataController = dataController
         
+        dataController.load()
         
 //        // USE IF NEEDED
 //        dataController.load {
