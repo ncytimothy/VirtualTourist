@@ -23,6 +23,10 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     // MKAnnoations Array
     var annotations = [MKAnnotation]()
     
+    let center = CLLocationCoordinate2D(latitude: 34.0689, longitude: -118.4452)
+    let coordinateSpan = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+    var region = MKCoordinateRegion()
+    
     // FETCH REQUEST
     // SELECTS INTERESTED DATA
     // LOADS THE DATA FROM PERSISTENT STORE INTO THE CONTEXT
@@ -32,6 +36,8 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
         // Do any additional setup after loading the view, typically from a nib.
         
         // 1. CREATE FETCH REQUEST
@@ -41,12 +47,13 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         // CALL THE TYPE FUNCTON FETCH REQUEST ON THAT SUBCLASS
         // Pin.fetchRequest() returns a fetch request initialized with the entity
         
-        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+        let pinFetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
         
         // 2. CONFIGURE FETCH REQUEST BY ADDING A SORT RULE
         // fetchRequest.sortDescriptors property takes an array of sort descriptors
         let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
-        fetchRequest.sortDescriptors = [sortDescriptor]
+        pinFetchRequest.sortDescriptors = [sortDescriptor]
+       
         
         // 3. USE THE FETCH REQUEST
         // ASK A CONTEXT TO EXECUTE THE REQUEST
@@ -54,7 +61,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         // .fetch() CAN THROW AN ERROR
         // SAVE THE RESULTS ONLY IF THE FETCH IS SUCCESSFUL
         // USE try? TO CONVERT THE ERROR INTO AN OPTIONAL
-        if let result = try? dataController.viewContext.fetch(fetchRequest) {
+        if let result = try? dataController.viewContext.fetch(pinFetchRequest) {
             // IF FETCH REQUEST SUCCESSFUL, STORE THE RESULT IN THE ARRAY FOR PINS
             pins = result
             //TODO: RELOAD MAPVIEW
@@ -101,6 +108,8 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         
     }
     
+    // MARK: - Add Region
+    
     // MARK: - Reload Map View
     func reloadMapView() {
         
@@ -122,6 +131,9 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
             // 4. DISPLAY THE ANNOTIONS
             performUIUpdatesOnMain {
                 self.mapView.addAnnotations(self.annotations)
+                self.region.center = self.center
+                self.region.span = self.coordinateSpan
+                self.mapView.region = self.region
             }
         }
     }
