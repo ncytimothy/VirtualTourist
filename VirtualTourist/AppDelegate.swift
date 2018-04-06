@@ -80,7 +80,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fatalError("dataController.viewContext cannot be saved!")
         }
     }
-
-
 }
 
