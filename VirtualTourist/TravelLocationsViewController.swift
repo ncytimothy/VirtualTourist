@@ -126,6 +126,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
             } else {
                 self.mapView.frame = CGRect(x: mapX, y: mapY, width: mapWidth, height: mapHeight)
                 self.deletePromptView.frame = CGRect(x: promptX, y: promptY, width: promptWidth, height: promptHeight)
+                self.deleteLabel.frame = CGRect(x: promptX, y: promptY, width: promptWidth, height: promptHeight)
             }
         })
     }
