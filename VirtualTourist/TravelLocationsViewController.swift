@@ -22,6 +22,9 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     var dataController: DataController!
     // MKAnnoations Array
     var annotations = [MKAnnotation]()
+    var mapViewIsShift = false
+    @IBOutlet weak var deletePromptView: UIView!
+    var deleteLabel: UILabel!
     
     // FETCH REQUEST
     // SELECTS INTERESTED DATA
@@ -29,7 +32,33 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     // MUST BE CONFIGURED WITH AN ENTITY TYPE
     // CAN OPTIONALLY INCLUDE FILTERING AND SORTING
     
+    // MARK: Configure Delete Prompt
+    fileprivate func configureDeletePrompt() {
+        /*
+        * Set deletePromptView starting origin (in y) at the view's height
+        * Set deletePromptView width to the view's width
+        */
+        deletePromptView.frame.origin.y = view.frame.size.height
+        deletePromptView.frame.size.width = view.frame.size.width
+    }
+    
+    // MARK: - Configure Delete Label
+    fileprivate func configureDeleteLabel() {
+        /**
+        * Create a label for the delete pins prompt
+        * Initially defining the label's frame is merely for initialization
+        */
+        let deleteLabelRect = CGRect(x: 0, y: 0, width: 200, height: 21)
+        deleteLabel = UILabel(frame: deleteLabelRect)
+        deleteLabel.font = UIFont.preferredFont(forTextStyle: .headline)
+        deleteLabel.text = "Tap Pins to Delete"
+        deleteLabel.textColor = .white
+        deleteLabel.textAlignment = .center
+        self.view.addSubview(deleteLabel)
+    }
+    
     // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -59,16 +88,47 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
             pins = result
             //TODO: RELOAD MAPVIEW
            reloadMapView()
-            
         }
+        // Set right button navigation item to system default edit button item
+        self.navigationItem.rightBarButtonItem = self.editButtonItem
+        configureDeletePrompt()
+        configureDeleteLabel()
+        
         
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    // MARK: - System Default Method for Edit Button Item
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        // Toggle the mapViewIsShift boolean
+        mapViewIsShift = !mapViewIsShift
+        
+        // Set mapView, deletePromptView shift points to 100
+        let mapX = mapView.frame.origin.x
+        let mapY = mapView.frame.origin.y + 100
+        let shiftMapY = mapView.frame.origin.y - 100
+        
+        let promptX = deletePromptView.frame.origin.x
+        let promptY = view.frame.size.height
+        let shiftPromptY = deletePromptView.frame.origin.y - 100
+        
+        let mapHeight = mapView.frame.size.height
+        let mapWidth = mapView.frame.size.width
+        
+        let promptHeight = deletePromptView.frame.size.height
+        let promptWidth = deletePromptView.frame.size.width
+        
+        UIView.animate(withDuration: 0.1, animations: {
+            if self.mapViewIsShift {
+                self.mapView.frame = CGRect(x: mapX, y: shiftMapY, width: mapWidth, height: mapHeight)
+                self.deletePromptView.frame = CGRect(x: promptX, y: shiftPromptY, width: promptWidth, height: promptHeight)
+                self.deleteLabel.frame = CGRect(x: promptX, y: promptY, width: promptWidth, height: promptHeight)
+            } else {
+                self.mapView.frame = CGRect(x: mapX, y: mapY, width: mapWidth, height: mapHeight)
+                self.deletePromptView.frame = CGRect(x: promptX, y: promptY, width: promptWidth, height: promptHeight)
+            }
+        })
     }
-    
     
     // MARK: - Actions
     @IBAction func longPressOnMap(_ sender: UILongPressGestureRecognizer) {

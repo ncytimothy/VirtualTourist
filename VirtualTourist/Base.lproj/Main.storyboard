@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -18,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="4Wg-jO-hPS"/>
+                        <segue destination="xiE-mr-Ncz" kind="relationship" relationship="rootViewController" id="aOs-7Q-jEk"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qe9-cL-5lG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -26,33 +27,50 @@
             <point key="canvasLocation" x="-633" y="134"/>
         </scene>
         <!--Virtual Tourist-->
-        <scene sceneID="tne-QT-ifu">
+        <scene sceneID="ANH-dm-cdP">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="TravelLocationsViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
-                    <mapView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" id="9GY-2z-EMT">
+                <viewController id="xiE-mr-Ncz" customClass="TravelLocationsViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="z5P-gr-m7h">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <gestureRecognizers/>
-                        <connections>
-                            <outletCollection property="gestureRecognizers" destination="lPW-2B-fzh" appends="YES" id="yjd-Nf-IXC"/>
-                        </connections>
-                    </mapView>
-                    <navigationItem key="navigationItem" title="Virtual Tourist" id="9yi-UZ-gDH">
-                        <barButtonItem key="rightBarButtonItem" title="Edit" id="OeM-Uy-fEB"/>
-                    </navigationItem>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="xPd-PS-8wl">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="W7S-IA-gEr" appends="YES" id="Le0-G5-46q"/>
+                                </connections>
+                            </mapView>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K8Z-Fz-q3p">
+                                <rect key="frame" x="0.0" y="567" width="375" height="100"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="xPd-PS-8wl" firstAttribute="leading" secondItem="YS2-K7-eJZ" secondAttribute="leading" id="HSc-6X-vdo"/>
+                            <constraint firstItem="xPd-PS-8wl" firstAttribute="top" secondItem="z5P-gr-m7h" secondAttribute="top" id="khF-Dx-URP"/>
+                            <constraint firstItem="xPd-PS-8wl" firstAttribute="trailing" secondItem="YS2-K7-eJZ" secondAttribute="trailing" id="vqM-3p-pPg"/>
+                            <constraint firstItem="xPd-PS-8wl" firstAttribute="bottom" secondItem="YS2-K7-eJZ" secondAttribute="bottom" id="zG4-YB-1FO"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="YS2-K7-eJZ"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Virtual Tourist" id="k8L-Ez-ift"/>
                     <connections>
-                        <outlet property="longPressRecognizer" destination="lPW-2B-fzh" id="xHj-lb-aRK"/>
-                        <outlet property="mapView" destination="9GY-2z-EMT" id="7dq-We-NcZ"/>
+                        <outlet property="deletePromptView" destination="K8Z-Fz-q3p" id="7rA-QY-9E6"/>
+                        <outlet property="longPressRecognizer" destination="W7S-IA-gEr" id="7dl-1h-STV"/>
+                        <outlet property="mapView" destination="xPd-PS-8wl" id="WbT-7b-hhZ"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="lPW-2B-fzh">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5Xk-US-7b9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="W7S-IA-gEr">
                     <connections>
-                        <action selector="longPressOnMap:" destination="BYZ-38-t0r" id="QWP-Lo-192"/>
+                        <action selector="longPressOnMap:" destination="xiE-mr-Ncz" id="tev-26-Qsf"/>
                     </connections>
                 </pongPressGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="136.80000000000001" y="133.5832083958021"/>
+            <point key="canvasLocation" x="101.59999999999999" y="133.5832083958021"/>
         </scene>
     </scenes>
 </document>
