@@ -38,7 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            // Update the main UI after persistent store is loaded
 //        }
 //
-        
         return true
     }
 
@@ -50,6 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        saveViewContext()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -62,6 +62,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        saveViewContext()
+    }
+    
+    //TODO: Set a function to be called at regular intervals
+    
+    func saveViewContext() {
+        /** Helper Method
+        * Calls save on the Data Controller's view context
+        * To be used in applicationDidEnterBackground and applicationWillTerminate
+        */
+        do {
+            try dataController.viewContext.save()
+        } catch {
+            fatalError("dataController.viewContext cannot be save!")
+        }
     }
 
 
