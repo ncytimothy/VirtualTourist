@@ -122,7 +122,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
             if self.mapViewIsShift {
                 self.mapView.frame = CGRect(x: mapX, y: shiftMapY, width: mapWidth, height: mapHeight)
                 self.deletePromptView.frame = CGRect(x: promptX, y: shiftPromptY, width: promptWidth, height: promptHeight)
-                self.deleteLabel.frame = CGRect(x: promptX, y: promptY, width: promptWidth, height: promptHeight)
+                self.deleteLabel.frame = CGRect(x: promptX, y: shiftPromptY, width: promptWidth, height: promptHeight)
             } else {
                 self.mapView.frame = CGRect(x: mapX, y: mapY, width: mapWidth, height: mapHeight)
                 self.deletePromptView.frame = CGRect(x: promptX, y: promptY, width: promptWidth, height: promptHeight)
