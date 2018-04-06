@@ -13,9 +13,16 @@ class TestViewController: UIViewController {
     
     var mapViewIsShift = false
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var deletePromptView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let promptX = deletePromptView.frame.origin.x
+        deletePromptView.frame.origin.y = view.frame.size.height
+        deletePromptView.frame.size.width = view.frame.size.width
+        let promptHeight = deletePromptView.frame.size.height
+        let promptWidth = deletePromptView.frame.size.width
+        
         
         
 
@@ -30,18 +37,27 @@ class TestViewController: UIViewController {
     @IBAction func verPressed(_ sender: Any) {
         mapViewIsShift = !mapViewIsShift
         print("mapViewShift: \(mapViewIsShift)")
-        let xPosition = mapView.frame.origin.x
-        let yPosition = mapView.frame.origin.y + 100
-        let shiftYPosition = mapView.frame.origin.y - 100
         
-        let height = mapView.frame.size.height
-        let width = mapView.frame.size.width
+        let mapX = mapView.frame.origin.x
+        let mapY = mapView.frame.origin.y + 100
+        let shiftMapY = mapView.frame.origin.y - 100
+        let promptX = deletePromptView.frame.origin.x
+        let promptY = deletePromptView.frame.origin.y
+        let shiftPromptY = deletePromptView.frame.origin.y - 100
+    
+        
+        let mapHeight = mapView.frame.size.height
+        let mapWidth = mapView.frame.size.width
+        let promptHeight = deletePromptView.frame.size.height
+        let promptWidth = deletePromptView.frame.size.width
         
         UIView.animate(withDuration: 0.1, animations: {
             if self.mapViewIsShift {
-                self.mapView.frame = CGRect(x: xPosition, y: shiftYPosition, width: width, height: height)
+                self.mapView.frame = CGRect(x: mapX, y: shiftMapY, width: mapWidth, height: mapHeight)
+                self.deletePromptView.frame = CGRect(x: promptX, y: shiftPromptY, width: promptWidth, height: promptHeight)
             } else {
-                self.mapView.frame = CGRect(x: xPosition, y: yPosition, width: width, height: height)
+                self.mapView.frame = CGRect(x: mapX, y: mapY, width: mapWidth, height: mapHeight)
+                self.deletePromptView.frame = CGRect(x: promptX, y: promptY, width: promptWidth, height: promptHeight)
             }
             
         })
