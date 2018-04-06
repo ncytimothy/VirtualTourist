@@ -71,7 +71,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </mapView>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gWA-pI-k3t">
-                                <rect key="frame" x="0.0" y="667" width="375" height="100"/>
+                                <rect key="frame" x="0.0" y="567" width="375" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
@@ -85,13 +85,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="63e-qp-amy"/>
                     </view>
-                    <navigationItem key="navigationItem" id="qqE-JS-0AA">
-                        <barButtonItem key="rightBarButtonItem" title="Ver" id="iar-hV-cmw">
-                            <connections>
-                                <action selector="verPressed:" destination="OiN-3z-2Zj" id="sb9-hx-Met"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="qqE-JS-0AA"/>
                     <connections>
                         <outlet property="deletePromptView" destination="gWA-pI-k3t" id="PLb-8D-8Dt"/>
                         <outlet property="mapView" destination="7UO-Z8-sgE" id="Xb9-n2-RSv"/>
