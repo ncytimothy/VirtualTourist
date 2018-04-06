@@ -73,16 +73,23 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="7UO-Z8-sgE" firstAttribute="leading" secondItem="ZO6-SS-rSp" secondAttribute="leading" id="7xX-vV-Tgo"/>
-                            <constraint firstItem="7UO-Z8-sgE" firstAttribute="top" secondItem="ZO6-SS-rSp" secondAttribute="top" id="BjT-E2-dlE"/>
-                            <constraint firstItem="7UO-Z8-sgE" firstAttribute="trailing" secondItem="63e-qp-amy" secondAttribute="trailing" id="efP-9J-tct"/>
-                            <constraint firstItem="7UO-Z8-sgE" firstAttribute="bottom" secondItem="63e-qp-amy" secondAttribute="bottom" id="tYY-J2-YLp"/>
+                            <constraint firstItem="7UO-Z8-sgE" firstAttribute="top" secondItem="ZO6-SS-rSp" secondAttribute="top" id="MPR-SK-kJU"/>
+                            <constraint firstItem="7UO-Z8-sgE" firstAttribute="trailing" secondItem="63e-qp-amy" secondAttribute="trailing" id="UKt-Ez-YSO"/>
+                            <constraint firstItem="7UO-Z8-sgE" firstAttribute="bottom" secondItem="63e-qp-amy" secondAttribute="bottom" id="syP-8h-RIs"/>
+                            <constraint firstItem="7UO-Z8-sgE" firstAttribute="leading" secondItem="63e-qp-amy" secondAttribute="leading" id="u57-iJ-kxY"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="63e-qp-amy"/>
                     </view>
                     <navigationItem key="navigationItem" id="qqE-JS-0AA">
-                        <barButtonItem key="rightBarButtonItem" title="Ver" id="iar-hV-cmw"/>
+                        <barButtonItem key="rightBarButtonItem" title="Ver" id="iar-hV-cmw">
+                            <connections>
+                                <action selector="verPressed:" destination="OiN-3z-2Zj" id="sb9-hx-Met"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="mapView" destination="7UO-Z8-sgE" id="Xb9-n2-RSv"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cci-LG-Egy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

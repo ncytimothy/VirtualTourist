@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7201F02020755DEF0026C710 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7201F01F20755DEF0026C710 /* DataController.swift */; };
+		7208F8E92076C0EF00E1E697 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7208F8E82076C0EF00E1E697 /* TestViewController.swift */; };
 		7228216C206ACC550097A891 /* GCDMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7228216B206ACC550097A891 /* GCDMain.swift */; };
 		727D21F3206AA531001F3A35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727D21F2206AA531001F3A35 /* AppDelegate.swift */; };
 		727D21F5206AA531001F3A35 /* TravelLocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727D21F4206AA531001F3A35 /* TravelLocationsViewController.swift */; };
@@ -38,6 +39,7 @@
 
 /* Begin PBXFileReference section */
 		7201F01F20755DEF0026C710 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
+		7208F8E82076C0EF00E1E697 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		7228216B206ACC550097A891 /* GCDMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDMain.swift; sourceTree = "<group>"; };
 		727D21EF206AA531001F3A35 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		727D21F2206AA531001F3A35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				727D21F9206AA531001F3A35 /* Assets.xcassets */,
 				727D21FB206AA531001F3A35 /* LaunchScreen.storyboard */,
 				727D21FE206AA531001F3A35 /* Info.plist */,
+				7208F8E82076C0EF00E1E697 /* TestViewController.swift */,
 			);
 			path = VirtualTourist;
 			sourceTree = "<group>";
@@ -284,6 +287,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7208F8E92076C0EF00E1E697 /* TestViewController.swift in Sources */,
 				7201F02020755DEF0026C710 /* DataController.swift in Sources */,
 				727D21F5206AA531001F3A35 /* TravelLocationsViewController.swift in Sources */,
 				7228216C206ACC550097A891 /* GCDMain.swift in Sources */,
