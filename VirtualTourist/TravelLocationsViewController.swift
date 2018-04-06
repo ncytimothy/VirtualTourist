@@ -162,6 +162,11 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         
     }
     
+    // MARK: - didSelectAnnotation
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        
+    }
+    
     // MARK: - Reload Map View
     func reloadMapView() {
         
