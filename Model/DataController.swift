@@ -57,12 +57,11 @@ class DataController {
     
      */
         persistentContainer.loadPersistentStores { (storeDescription, error) in
-            // GUARD IF THERE IS ERROR, STOP EXECUTIVE OF APP IF ERROR EXISTS
+            // GUARD IF THERE IS ERROR, STOP EXECUTION OF APP IF ERROR EXISTS
             guard error == nil else {
                 fatalError(error!.localizedDescription)
             }
             completion?()
         }
     }
-    
 }
