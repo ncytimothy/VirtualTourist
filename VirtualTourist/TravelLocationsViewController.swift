@@ -25,6 +25,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     var mapViewIsShift = false
     @IBOutlet weak var deletePromptView: UIView!
     var deleteLabel: UILabel!
+    var annotationToDelete: MKAnnotation!
     
     // FETCH REQUEST
     // SELECTS INTERESTED DATA
@@ -164,7 +165,21 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     // MARK: - didSelectAnnotation
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        
+        print("view.annonation: \(String(describing: view.annotation))")
+        annotationToDelete = view.annotation
+        removeAnnotation()
+    }
+    
+    // MARK: - removeAnnotation
+    func removeAnnotation() {
+        print("removing annotation...")
+        mapView.removeAnnotation(annotationToDelete)
+        let pinToDelete = Pin(context: dataController.viewContext)
+        pinToDelete.latitude = annotationToDelete.coordinate.latitude
+        pinToDelete.longitude = annotationToDelete.coordinate.longitude
+        dataController.viewContext.delete(pinToDelete)
+        try? dataController.viewContext.save()
+        reloadMapView()
     }
     
     // MARK: - Reload Map View
