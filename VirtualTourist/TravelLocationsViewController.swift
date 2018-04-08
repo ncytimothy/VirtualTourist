@@ -173,13 +173,25 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     // MARK: - removeAnnotation
     func removeAnnotation() {
         print("removing annotation...")
-        mapView.removeAnnotation(annotationToDelete)
+        print("pin[0]: \(pins[0])")
+        
         let pinToDelete = Pin(context: dataController.viewContext)
-        pinToDelete.latitude = annotationToDelete.coordinate.latitude
+        
+        for pin in pins {
+            if pin.longitude == annotationToDelete.coordinate.longitude &&
+               pin.latitude == annotationToDelete.coordinate.latitude {
+                pinToDelete.creationDate = pin.creationDate
+            }
+        }
+
         pinToDelete.longitude = annotationToDelete.coordinate.longitude
+        pinToDelete.latitude = annotationToDelete.coordinate.latitude
+
         dataController.viewContext.delete(pinToDelete)
         try? dataController.viewContext.save()
-        reloadMapView()
+        performUIUpdatesOnMain {
+            self.reloadMapView()
+        }
     }
     
     // MARK: - Reload Map View
