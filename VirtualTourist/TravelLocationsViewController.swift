@@ -93,8 +93,6 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         self.navigationItem.rightBarButtonItem = self.editButtonItem
         configureDeletePrompt()
         configureDeleteLabel()
-        
-        
     }
 
     // MARK: - System Default Method for Edit Button Item
