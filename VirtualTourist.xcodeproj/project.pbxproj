@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7201F02020755DEF0026C710 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7201F01F20755DEF0026C710 /* DataController.swift */; };
 		7228216C206ACC550097A891 /* GCDMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7228216B206ACC550097A891 /* GCDMain.swift */; };
+		72701451208071D200866751 /* Pin+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72701450208071D200866751 /* Pin+Extensions.swift */; };
 		727D21F3206AA531001F3A35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727D21F2206AA531001F3A35 /* AppDelegate.swift */; };
 		727D21F5206AA531001F3A35 /* TravelLocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 727D21F4206AA531001F3A35 /* TravelLocationsViewController.swift */; };
 		727D21F8206AA531001F3A35 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 727D21F6206AA531001F3A35 /* Main.storyboard */; };
@@ -39,6 +40,7 @@
 /* Begin PBXFileReference section */
 		7201F01F20755DEF0026C710 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		7228216B206ACC550097A891 /* GCDMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDMain.swift; sourceTree = "<group>"; };
+		72701450208071D200866751 /* Pin+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Pin+Extensions.swift"; sourceTree = "<group>"; };
 		727D21EF206AA531001F3A35 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		727D21F2206AA531001F3A35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		727D21F4206AA531001F3A35 /* TravelLocationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelLocationsViewController.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 				7228216A206ACC490097A891 /* GCD */,
 				727D2221206AA831001F3A35 /* VirtualTourist.xcdatamodeld */,
 				7201F01F20755DEF0026C710 /* DataController.swift */,
+				72701450208071D200866751 /* Pin+Extensions.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -289,6 +292,7 @@
 				7228216C206ACC550097A891 /* GCDMain.swift in Sources */,
 				727D21F3206AA531001F3A35 /* AppDelegate.swift in Sources */,
 				727D2223206AA831001F3A35 /* VirtualTourist.xcdatamodeld in Sources */,
+				72701451208071D200866751 /* Pin+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -16,21 +16,19 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     // MARK: - Properties
     @IBOutlet var longPressRecognizer: UILongPressGestureRecognizer!
     @IBOutlet var mapView: MKMapView!
-    // THE 'PINS' OBJECTS BEING DISPLAYED
-    var pins: [Pin] = []
+
     // Data Controller property from AppDelegate.swift
     var dataController: DataController!
+
     // MKAnnoations Array
     var annotations = [MKAnnotation]()
     var mapViewIsShift = false
+    
     @IBOutlet weak var deletePromptView: UIView!
     var deleteLabel: UILabel!
     
-    // FETCH REQUEST
-    // SELECTS INTERESTED DATA
-    // LOADS THE DATA FROM PERSISTENT STORE INTO THE CONTEXT
-    // MUST BE CONFIGURED WITH AN ENTITY TYPE
-    // CAN OPTIONALLY INCLUDE FILTERING AND SORTING
+    // FETCHED RESULTS CONTROLLER, SPECIFIED WITH ENTITY
+    var fetchedResultsController: NSFetchedResultsController<Pin>!
     
     // MARK: Configure Delete Prompt
     fileprivate func configureDeletePrompt() {
@@ -57,50 +55,68 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         self.view.addSubview(deleteLabel)
     }
     
-    // MARK: - Lifecycle
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        
+//    // MARK: - FETCHED RESULTS CONTROLLER
+    fileprivate func setUpFetchedResultsController() {
+
         // 1. CREATE FETCH REQUEST
         // FETCH REQUESTS ARE GENERIC TYPES, SO YOU SPECIFY THE TYPE PARAMETER
         // SPECIFYING THE TYPE PARAMETER WILL MAKE THE FETCH REQUEST
         // WORK WITH A SPECIFIC MANAGED OBJECT SUBCLASS
         // CALL THE TYPE FUNCTON FETCH REQUEST ON THAT SUBCLASS
         // Pin.fetchRequest() returns a fetch request initialized with the entity
-        
         let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-        
-        // 2. CONFIGURE FETCH REQUEST BY ADDING A SORT RULE
+
+        // 2. CONFIGURE THE FETCH REQUEST BY ADDING A SORT RULE
         // fetchRequest.sortDescriptors property takes an array of sort descriptors
         let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        // 3. USE THE FETCH REQUEST
-        // ASK A CONTEXT TO EXECUTE THE REQUEST
-        // ASK DATA CONTROLLER'S VIEW CONTEXT (PERSISTENT CONTROLLER'S VIEW CONTEXT)
-        // .fetch() CAN THROW AN ERROR
-        // SAVE THE RESULTS ONLY IF THE FETCH IS SUCCESSFUL
-        // USE try? TO CONVERT THE ERROR INTO AN OPTIONAL
-        if let result = try? dataController.viewContext.fetch(fetchRequest) {
-            // IF FETCH REQUEST SUCCESSFUL, STORE THE RESULT IN THE ARRAY FOR PINS
-            pins = result
-            //TODO: RELOAD MAPVIEW
-           reloadMapView()
+
+        // 3. INSTANTIATE FETCHED RESULTS CONTROLLER WITH FETCH REQUEST
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "pin")
+
+        // 4. SET THE FETCHED RESULTS CONTROLLER DELEGATE PROPERTY TO SELF
+        fetchedResultsController.delegate = self
+
+        // 5. PERFORM FETCH TO LOAD DATA AND START TRACKING
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("The fetch cannot be performed: \(error.localizedDescription)")
         }
+
+        // 6. REMOVE THE FETCHED RESULTS CONTROLLER WHEN THE VIEW DISAPPEARS
+        // 7. IMPLEMENT DELEGATE METHODS FOR FETCHED RESULTS CONTROLLER TO TRACK CHANGES
+
+
+    }
+    
+    // MARK: - Lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+        
+        setUpFetchedResultsController()
+        
         // Set right button navigation item to system default edit button item
         self.navigationItem.rightBarButtonItem = self.editButtonItem
         configureDeletePrompt()
         configureDeleteLabel()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setUpFetchedResultsController()
+        reloadMapView()
+    }
+    
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    }
 
     // MARK: - System Default Method for Edit Button Item
-    override func setEditing(_ editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: animated)
-        // Toggle the mapViewIsShift boolean
-        mapViewIsShift = !mapViewIsShift
-        
+    fileprivate func editAnimation(_ mapViewIsShift: Bool) {
         // Set mapView, deletePromptView shift points to 100
         let mapX = mapView.frame.origin.x
         let mapY = mapView.frame.origin.y + 100
@@ -129,6 +145,13 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         })
     }
     
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        // Toggle the mapViewIsShift boolean
+        mapViewIsShift = !mapViewIsShift
+        editAnimation(mapViewIsShift)
+    }
+    
     // MARK: - Actions
     @IBAction func longPressOnMap(_ sender: UILongPressGestureRecognizer) {
         if sender.state != UIGestureRecognizerState.began { return }
@@ -141,25 +164,25 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     // MARK: - Add Pin
     func addPin(coordinate: CLLocationCoordinate2D) {
+        print("addPin called")
+        
         // 1. ASSOCIATE PIN WITH THE DATA CONTROLLER'S VIEW CONTEXT
         let pin = Pin(context: dataController.viewContext)
+        
         // 2. CONFIGURE THE PIN OBJECT
         pin.latitude = coordinate.latitude
         pin.longitude = coordinate.longitude
         pin.creationDate = Date()
+        
         // 3. SAVE THE PIN INTO THE PERSISTENT STORE
         // NOTIFY THE USER IF SAVE FAILS
         do {
             try dataController.viewContext.save()
         } catch {
             fatalError(error.localizedDescription)
-        }
-       
-        // 4. ADD THE NEWLY CREATED PIN INTO THE PINS ARRAY
-        pins.append(pin)
-        
+        }        
     }
-    
+   
     // MARK: - Reload Map View
     func reloadMapView() {
         
@@ -168,21 +191,49 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
             annotations.removeAll()
         }
         
-        for pin in pins {
-            // 1. RETRIEVE LOCATION DATA FROM PERSISTENT STORE
-            let lat = pin.latitude
-            let long = pin.longitude
-            // 2. CONFIGURE THE MKPointAnnotation
-            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = coordinate
-            // 3. ADD THE ANNOTATION
-            annotations.append(annotation)
-            // 4. DISPLAY THE ANNOTIONS
-            performUIUpdatesOnMain {
-                self.mapView.addAnnotations(self.annotations)
+        if let pins = fetchedResultsController.fetchedObjects {
+            for pin in pins {
+                print("\(pins.count)")
+                print("adding annotations...")
+                // 1. RETRIEVE LOCATION DATA FROM PERSISTENT STORE
+                let lat = pin.latitude
+                let long = pin.longitude
+                // 2. CONFIGURE THE MKPointAnnotation
+                let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = coordinate
+                // 3. ADD THE ANNOTATION
+                annotations.append(annotation)
+                // 4. DISPLAY THE ANNOTIONS
+                performUIUpdatesOnMain {
+                    self.mapView.addAnnotations(self.annotations)
+                }
             }
         }
     }
 }
+
+extension TravelLocationsViewController: NSFetchedResultsControllerDelegate {
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        guard let pin = anObject as? Pin else {
+            preconditionFailure("All changes observed in the TravelLocationsViewController should be for Pin instances")
+        }
+        
+        switch type {
+        case .insert:
+            mapView.addAnnotation(pin)
+        case .delete:
+            mapView.removeAnnotation(pin)
+        case .update:
+            mapView.removeAnnotation(pin)
+            mapView.addAnnotation(pin)
+        case .move:
+            fatalError("How did we move a point? We have a stable sort")
+        }
+    }
+    
+}
+
+
 
