@@ -169,28 +169,6 @@ class TravelLocationsViewController: UIViewController {
 //        reloadMapView()
 //    }
     
-//    @IBAction func tapOnMap(_ sender: UITapGestureRecognizer) {
-//        if sender.state != UIGestureRecognizerState.began { return }
-//       let touchLocation = sender.location(in: mapView)
-//        let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
-//        print("Tapped at lat: \(locationCoordinate.latitude) long: \(locationCoordinate.longitude)")
-//
-//    }
-    
-    
-    
- 
-
-    
-    
-    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        self.selectedAnnotation = view.annotation as? MKPointAnnotation
-    }
-    
-    
-    
-    
-    
     // MARK: - Add Pin
     func addPin(coordinate: CLLocationCoordinate2D) {
         print("addPin called")
@@ -246,8 +224,6 @@ extension TravelLocationsViewController: MKMapViewDelegate {
         
         if let pins = fetchedResultsController.fetchedObjects {
             for pin in pins {
-                print("\(pins.count)")
-                print("adding annotations...")
                 // 1. RETRIEVE LOCATION DATA FROM PERSISTENT STORE
                 let lat = pin.latitude
                 let long = pin.longitude
@@ -265,6 +241,7 @@ extension TravelLocationsViewController: MKMapViewDelegate {
         }
     }
     
+    // CONFIGURE MKAnnotation VIEW
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let reuseId = "pin"
         
@@ -280,12 +257,35 @@ extension TravelLocationsViewController: MKMapViewDelegate {
         return pinView
     }
     
-    func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         print("Pin Tapped!")
         
+        let selectedAnnotation = view.annotation
+        let selectedAnnotationLat = selectedAnnotation?.coordinate.latitude
+        let selectedAnnotationLong = selectedAnnotation?.coordinate.longitude
+        var selectedPin: Pin
+        
+        if let result = fetchedResultsController.fetchedObjects {
+            
+            for pin in result {
+                if pin.latitude == selectedAnnotationLat && pin.longitude == selectedAnnotationLong {
+                    selectedPin = pin
+                    print("\(selectedPin.coordinate) in TravelLocationsVC")
+                    prepare(pin: selectedPin) { (photoAlbumVC) in
+                        self.navigationController?.pushViewController(photoAlbumVC, animated: true)
+                    }
+                }
+            }
+        }
     }
     
-
+    // MARK: - Prepare for Segue to Photo Album VC
+    func prepare(pin: Pin, _ completionHandler: @escaping (_ photoAlbumVC: PhotoAlbumViewController) -> Void) {
+         let photoAlbumVC = storyboard?.instantiateViewController(withIdentifier: "PhotoAlbumVC") as! PhotoAlbumViewController
+        photoAlbumVC.pin = pin
+        completionHandler(photoAlbumVC)
+        
+    }
 }
 
 
