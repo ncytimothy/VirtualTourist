@@ -283,8 +283,8 @@ extension TravelLocationsViewController: MKMapViewDelegate {
     func prepare(pin: Pin, _ completionHandler: @escaping (_ photoAlbumVC: PhotoAlbumViewController) -> Void) {
          let photoAlbumVC = storyboard?.instantiateViewController(withIdentifier: "PhotoAlbumVC") as! PhotoAlbumViewController
         photoAlbumVC.pin = pin
+        photoAlbumVC.dataController = dataController
         completionHandler(photoAlbumVC)
-        
     }
 }
 

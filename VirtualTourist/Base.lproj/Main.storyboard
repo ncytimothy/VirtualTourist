@@ -86,18 +86,24 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="zIL-yY-4JU">
-                                <rect key="frame" x="0.0" y="20" width="375" height="128"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="201"/>
+                                <connections>
+                                    <outlet property="delegate" destination="mS2-7U-FOB" id="Qtx-6S-QFD"/>
+                                </connections>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="zIL-yY-4JU" secondAttribute="trailing" id="NaD-U0-DeT"/>
-                            <constraint firstItem="zIL-yY-4JU" firstAttribute="top" secondItem="DgY-m4-owO" secondAttribute="top" id="PdL-L0-qaY"/>
-                            <constraint firstItem="DgY-m4-owO" firstAttribute="bottom" secondItem="zIL-yY-4JU" secondAttribute="bottom" constant="519" id="ba5-h2-7es"/>
-                            <constraint firstItem="zIL-yY-4JU" firstAttribute="leading" secondItem="DgY-m4-owO" secondAttribute="leading" id="unQ-Bh-bgi"/>
+                            <constraint firstAttribute="trailing" secondItem="zIL-yY-4JU" secondAttribute="trailing" id="Itl-fH-sZM"/>
+                            <constraint firstItem="zIL-yY-4JU" firstAttribute="leading" secondItem="FoM-dF-k2x" secondAttribute="leading" id="IwI-Ah-kkI"/>
+                            <constraint firstItem="zIL-yY-4JU" firstAttribute="top" secondItem="DgY-m4-owO" secondAttribute="top" id="R2x-XU-vVO"/>
+                            <constraint firstItem="DgY-m4-owO" firstAttribute="bottom" secondItem="zIL-yY-4JU" secondAttribute="bottom" constant="446" id="d25-BD-xOW"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="DgY-m4-owO"/>
                     </view>
+                    <connections>
+                        <outlet property="mapView" destination="zIL-yY-4JU" id="2YZ-lX-Lel"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rBj-cz-Vn0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
