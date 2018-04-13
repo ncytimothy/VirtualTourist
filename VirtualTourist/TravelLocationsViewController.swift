@@ -11,12 +11,13 @@ import MapKit
 // IMPORT CORE DATA
 import CoreData
 
-class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
+class TravelLocationsViewController: UIViewController {
 
     // MARK: - Properties
     @IBOutlet var longPressRecognizer: UILongPressGestureRecognizer!
     @IBOutlet var mapView: MKMapView!
-
+    @IBOutlet var tapGestureRecognizer: UITapGestureRecognizer!
+    
     // Data Controller property from AppDelegate.swift
     var dataController: DataController!
 
@@ -29,6 +30,9 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     // FETCHED RESULTS CONTROLLER, SPECIFIED WITH ENTITY
     var fetchedResultsController: NSFetchedResultsController<Pin>!
+    
+    // SELECTED ANNOTATION POINT ANNOTATION
+    var selectedAnnotation: MKPointAnnotation?
     
     // MARK: Configure Delete Prompt
     fileprivate func configureDeletePrompt() {
@@ -102,6 +106,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         self.navigationItem.rightBarButtonItem = self.editButtonItem
         configureDeletePrompt()
         configureDeleteLabel()
+        tapGestureRecognizer.isEnabled = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -115,7 +120,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         super.viewWillDisappear(animated)
     }
 
-    // MARK: - System Default Method for Edit Button Item
+    // MARK: - Edit Delete View Animation
     fileprivate func editAnimation(_ mapViewIsShift: Bool) {
         // Set mapView, deletePromptView shift points to 100
         let mapX = mapView.frame.origin.x
@@ -145,6 +150,8 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         })
     }
     
+    
+    // MARK: - System Default Method for Edit Button Item
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         // Toggle the mapViewIsShift boolean
@@ -153,14 +160,36 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     }
     
     // MARK: - Actions
-    @IBAction func longPressOnMap(_ sender: UILongPressGestureRecognizer) {
-        if sender.state != UIGestureRecognizerState.began { return }
-        let touchLocation = sender.location(in: mapView)
-        let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
-        print("Tapped at lat: \(locationCoordinate.latitude) long: \(locationCoordinate.longitude)")
-        addPin(coordinate: locationCoordinate)
-        reloadMapView()
+//    @IBAction func longPressOnMap(_ sender: UILongPressGestureRecognizer) {
+//        if sender.state != UIGestureRecognizerState.began { return }
+//        let touchLocation = sender.location(in: mapView)
+//        let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
+//        print("Tapped at lat: \(locationCoordinate.latitude) long: \(locationCoordinate.longitude)")
+//        addPin(coordinate: locationCoordinate)
+//        reloadMapView()
+//    }
+    
+//    @IBAction func tapOnMap(_ sender: UITapGestureRecognizer) {
+//        if sender.state != UIGestureRecognizerState.began { return }
+//       let touchLocation = sender.location(in: mapView)
+//        let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
+//        print("Tapped at lat: \(locationCoordinate.latitude) long: \(locationCoordinate.longitude)")
+//
+//    }
+    
+    
+    
+ 
+
+    
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        self.selectedAnnotation = view.annotation as? MKPointAnnotation
     }
+    
+    
+    
+    
     
     // MARK: - Add Pin
     func addPin(coordinate: CLLocationCoordinate2D) {
@@ -180,10 +209,34 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
             try dataController.viewContext.save()
         } catch {
             fatalError(error.localizedDescription)
-        }        
+        }
     }
-   
-    // MARK: - Reload Map View
+}
+
+// MARK: - NSFetchedResultsController Delegate
+extension TravelLocationsViewController: NSFetchedResultsControllerDelegate {
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        guard let pin = anObject as? Pin else {
+            preconditionFailure("All changes observed in the TravelLocationsViewController should be for Pin instances")
+        }
+        
+        switch type {
+        case .insert:
+            mapView.addAnnotation(pin)
+        case .delete:
+            mapView.removeAnnotation(pin)
+        case .update:
+            mapView.removeAnnotation(pin)
+            mapView.addAnnotation(pin)
+        case .move:
+            fatalError("How did we move a point? We have a stable sort")
+        }
+    }
+}
+
+extension TravelLocationsViewController: MKMapViewDelegate {
+    
     func reloadMapView() {
         
         if !annotations.isEmpty {
@@ -211,28 +264,28 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
             }
         }
     }
-}
-
-extension TravelLocationsViewController: NSFetchedResultsControllerDelegate {
     
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        guard let pin = anObject as? Pin else {
-            preconditionFailure("All changes observed in the TravelLocationsViewController should be for Pin instances")
-        }
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let reuseId = "pin"
         
-        switch type {
-        case .insert:
-            mapView.addAnnotation(pin)
-        case .delete:
-            mapView.removeAnnotation(pin)
-        case .update:
-            mapView.removeAnnotation(pin)
-            mapView.addAnnotation(pin)
-        case .move:
-            fatalError("How did we move a point? We have a stable sort")
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView?.canShowCallout = false
+            pinView?.pinTintColor = .red
+        } else {
+            pinView?.annotation = annotation
         }
+        return pinView
     }
     
+    func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
+        print("Pin Tapped!")
+        
+    }
+    
+
 }
 
 

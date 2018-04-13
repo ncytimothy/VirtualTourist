@@ -38,7 +38,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <gestureRecognizers/>
                                 <connections>
-                                    <outletCollection property="gestureRecognizers" destination="W7S-IA-gEr" appends="YES" id="Le0-G5-46q"/>
+                                    <outlet property="delegate" destination="xiE-mr-Ncz" id="QWO-wq-Ct0"/>
                                 </connections>
                             </mapView>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K8Z-Fz-q3p">
@@ -59,11 +59,16 @@
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="k8L-Ez-ift"/>
                     <connections>
                         <outlet property="deletePromptView" destination="K8Z-Fz-q3p" id="7rA-QY-9E6"/>
-                        <outlet property="longPressRecognizer" destination="W7S-IA-gEr" id="7dl-1h-STV"/>
                         <outlet property="mapView" destination="xPd-PS-8wl" id="WbT-7b-hhZ"/>
+                        <outlet property="tapGestureRecognizer" destination="0ot-EH-YLu" id="1pj-35-Ita"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Xk-US-7b9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="0ot-EH-YLu">
+                    <connections>
+                        <action selector="tapPiece:" destination="xiE-mr-Ncz" id="J9W-8I-lT5"/>
+                    </connections>
+                </tapGestureRecognizer>
                 <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="W7S-IA-gEr">
                     <connections>
                         <action selector="longPressOnMap:" destination="xiE-mr-Ncz" id="tev-26-Qsf"/>
