@@ -14,7 +14,6 @@ import CoreData
 class TravelLocationsViewController: UIViewController {
 
     // MARK: - Properties
-    @IBOutlet var longPressRecognizer: UILongPressGestureRecognizer!
     @IBOutlet var mapView: MKMapView!
    
     
@@ -106,7 +105,6 @@ class TravelLocationsViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = self.editButtonItem
         configureDeletePrompt()
         configureDeleteLabel()
-        longPressRecognizer.isEnabled = true
        
     }
     
@@ -161,14 +159,22 @@ class TravelLocationsViewController: UIViewController {
     }
     
 //     MARK: - Actions
+//    @IBAction func longPressOnMap(_ sender: UILongPressGestureRecognizer) {
+//        if sender.state != UIGestureRecognizerState.began { return }
+//        let touchLocation = sender.location(in: mapView)
+//        let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
+//        print("Tapped at lat: \(locationCoordinate.latitude) long: \(locationCoordinate.longitude)")
+//        addPin(coordinate: locationCoordinate)
+//        reloadMapView()
+//    }
+    
     @IBAction func longPressOnMap(_ sender: UILongPressGestureRecognizer) {
+        
         if sender.state != UIGestureRecognizerState.began { return }
-        let touchLocation = sender.location(in: mapView)
-        let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
-        print("Tapped at lat: \(locationCoordinate.latitude) long: \(locationCoordinate.longitude)")
-        addPin(coordinate: locationCoordinate)
-        reloadMapView()
+        print("VER!")
+        
     }
+    
     
     // MARK: - Add Pin
     func addPin(coordinate: CLLocationCoordinate2D) {

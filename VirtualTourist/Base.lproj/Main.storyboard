@@ -59,14 +59,13 @@
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="k8L-Ez-ift"/>
                     <connections>
                         <outlet property="deletePromptView" destination="K8Z-Fz-q3p" id="7rA-QY-9E6"/>
-                        <outlet property="longPressRecognizer" destination="W7S-IA-gEr" id="0Pb-2x-YXW"/>
                         <outlet property="mapView" destination="xPd-PS-8wl" id="WbT-7b-hhZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Xk-US-7b9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="W7S-IA-gEr">
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="Qhw-4h-Q5b">
                     <connections>
-                        <action selector="longPressOnMap:" destination="xiE-mr-Ncz" id="fvC-Kz-FER"/>
+                        <action selector="longPressOnMap:" destination="xiE-mr-Ncz" id="60x-vo-y3u"/>
                     </connections>
                 </pongPressGestureRecognizer>
             </objects>
