@@ -21,12 +21,22 @@ class PhotoAlbumViewController: UIViewController {
     var annotations = [MKAnnotation]()
     @IBOutlet weak var mapView: MKMapView!
     
+    @IBOutlet weak var imageView: UIImageView!
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
          print("\(pin.coordinate) in PhotoAlbumVC")
         reloadMapView()
+        FlickrClient.sharedInstance().getPicture(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude) { (success, image, error) in
+            
+            if success {
+                performUIUpdatesOnMain {
+                    self.imageView.image = image
+                }
+            }
+            
+        }
         
         // Do any additional setup after loading the view.
     }
@@ -36,16 +46,9 @@ class PhotoAlbumViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    
 
 }
 

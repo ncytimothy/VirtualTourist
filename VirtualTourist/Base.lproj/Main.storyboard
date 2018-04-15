@@ -59,19 +59,14 @@
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="k8L-Ez-ift"/>
                     <connections>
                         <outlet property="deletePromptView" destination="K8Z-Fz-q3p" id="7rA-QY-9E6"/>
+                        <outlet property="longPressRecognizer" destination="W7S-IA-gEr" id="0Pb-2x-YXW"/>
                         <outlet property="mapView" destination="xPd-PS-8wl" id="WbT-7b-hhZ"/>
-                        <outlet property="tapGestureRecognizer" destination="0ot-EH-YLu" id="1pj-35-Ita"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Xk-US-7b9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="0ot-EH-YLu">
-                    <connections>
-                        <action selector="tapPiece:" destination="xiE-mr-Ncz" id="J9W-8I-lT5"/>
-                    </connections>
-                </tapGestureRecognizer>
                 <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="W7S-IA-gEr">
                     <connections>
-                        <action selector="longPressOnMap:" destination="xiE-mr-Ncz" id="tev-26-Qsf"/>
+                        <action selector="longPressOnMap:" destination="xiE-mr-Ncz" id="fvC-Kz-FER"/>
                     </connections>
                 </pongPressGestureRecognizer>
             </objects>
@@ -91,6 +86,10 @@
                                     <outlet property="delegate" destination="mS2-7U-FOB" id="Qtx-6S-QFD"/>
                                 </connections>
                             </mapView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="t3j-Ww-fcN">
+                                <rect key="frame" x="67" y="294" width="240" height="243"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -102,6 +101,7 @@
                         <viewLayoutGuide key="safeArea" id="DgY-m4-owO"/>
                     </view>
                     <connections>
+                        <outlet property="imageView" destination="t3j-Ww-fcN" id="Q8i-AX-HwO"/>
                         <outlet property="mapView" destination="zIL-yY-4JU" id="2YZ-lX-Lel"/>
                     </connections>
                 </viewController>

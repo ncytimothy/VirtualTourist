@@ -68,6 +68,7 @@ class FlickrClient: NSObject {
         components.scheme = Constants.Flickr.APIScheme
         components.host = Constants.Flickr.APIHost
         components.path = Constants.Flickr.APIPath
+        components.queryItems = [URLQueryItem]()
         
         for (key, value) in parameters {
             let queryItem = URLQueryItem(name: key, value: "\(value)")
@@ -77,7 +78,7 @@ class FlickrClient: NSObject {
         return components.url!
     }
     
-    // Given raw JSON, return a usable Foundation object
+    // Given raw data, try to serialize to JSON
     private func convertDataWithCompletionHandler(_ data: Data, completionHandlerForConvertData: (_ result: AnyObject?, _ error: NSError?) -> Void) {
         
         var parsedResult: AnyObject! = nil
@@ -89,11 +90,13 @@ class FlickrClient: NSObject {
         }
         completionHandlerForConvertData(parsedResult, nil)
     }
-    
-    // Create BBox
-//    private func bboxString() -> String {
-//        if let latitude = Double(
-//    }
-   
-    
+
+    // MARK: - Shared Instance
+    class func sharedInstance() -> FlickrClient {
+        struct Singleton {
+            static var sharedInstance = FlickrClient()
+        }
+        return Singleton.sharedInstance
+    }
+
 }
