@@ -39,6 +39,7 @@
                                 <gestureRecognizers/>
                                 <connections>
                                     <outlet property="delegate" destination="xiE-mr-Ncz" id="QWO-wq-Ct0"/>
+                                    <outletCollection property="gestureRecognizers" destination="Qhw-4h-Q5b" appends="YES" id="ess-ZX-w9w"/>
                                 </connections>
                             </mapView>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K8Z-Fz-q3p">
@@ -65,7 +66,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Xk-US-7b9" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="Qhw-4h-Q5b">
                     <connections>
-                        <action selector="longPressOnMap:" destination="xiE-mr-Ncz" id="60x-vo-y3u"/>
+                        <action selector="longPressOnMap:" destination="xiE-mr-Ncz" id="1hS-Go-uwI"/>
                     </connections>
                 </pongPressGestureRecognizer>
             </objects>

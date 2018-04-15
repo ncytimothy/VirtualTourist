@@ -159,22 +159,14 @@ class TravelLocationsViewController: UIViewController {
     }
     
 //     MARK: - Actions
-//    @IBAction func longPressOnMap(_ sender: UILongPressGestureRecognizer) {
-//        if sender.state != UIGestureRecognizerState.began { return }
-//        let touchLocation = sender.location(in: mapView)
-//        let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
-//        print("Tapped at lat: \(locationCoordinate.latitude) long: \(locationCoordinate.longitude)")
-//        addPin(coordinate: locationCoordinate)
-//        reloadMapView()
-//    }
-    
     @IBAction func longPressOnMap(_ sender: UILongPressGestureRecognizer) {
-        
         if sender.state != UIGestureRecognizerState.began { return }
-        print("VER!")
-        
+        let touchLocation = sender.location(in: mapView)
+        let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
+        print("Tapped at lat: \(locationCoordinate.latitude) long: \(locationCoordinate.longitude)")
+        addPin(coordinate: locationCoordinate)
+        reloadMapView()
     }
-    
     
     // MARK: - Add Pin
     func addPin(coordinate: CLLocationCoordinate2D) {
