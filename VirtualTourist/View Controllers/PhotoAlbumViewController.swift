@@ -14,9 +14,13 @@ class PhotoAlbumViewController: UIViewController {
     
     // MARK: - Properties
     var pin: Pin!
-    
+    @IBOutlet weak var collectionView: UICollectionView!
     // Dependency Injection of DataController (Implicitly Unwrapped)
     var dataController: DataController!
+    
+    // (Currently) Downloaded Images Array
+    var images: [UIImage?] = []
+    
 
     var annotations = [MKAnnotation]()
     @IBOutlet weak var mapView: MKMapView!
@@ -26,16 +30,18 @@ class PhotoAlbumViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-         print("\(pin.coordinate) in PhotoAlbumVC")
+        collectionView.delegate = self
+        print("\(pin.coordinate) in PhotoAlbumVC")
         reloadMapView()
-        FlickrClient.sharedInstance().getPicture(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude) { (success, image, error) in
+        FlickrClient.sharedInstance().downloadPhotos(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude) { (success, images, error) in
             
             if success {
+                self.images = images
+                print("images.count: \(images.count)")
                 performUIUpdatesOnMain {
-                    self.imageView.image = image
+                    self.collectionView.reloadData()
                 }
             }
-            
         }
         
         // Do any additional setup after loading the view.
@@ -44,6 +50,11 @@ class PhotoAlbumViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        collectionView.reloadData()
     }
     
     
@@ -93,6 +104,22 @@ extension PhotoAlbumViewController: MKMapViewDelegate {
             pinView?.annotation = annotation
         }
         return pinView
+    }
+}
+
+extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("images.count: \(images.count)")
+        return images.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as! ImageCollectionViewCell
+        cell.imageView.image = images[(indexPath.row)]
+        return cell
     }
     
 }

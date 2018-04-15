@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -80,28 +81,66 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="zIL-yY-4JU">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" pitchEnabled="NO" showsBuildings="NO" showsCompass="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zIL-yY-4JU">
                                 <rect key="frame" x="0.0" y="20" width="375" height="201"/>
                                 <connections>
                                     <outlet property="delegate" destination="mS2-7U-FOB" id="Qtx-6S-QFD"/>
                                 </connections>
                             </mapView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="t3j-Ww-fcN">
-                                <rect key="frame" x="67" y="294" width="240" height="243"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="9lG-lm-2SV">
+                                <rect key="frame" x="0.0" y="220" width="375" height="447"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="DQU-W9-pU1">
+                                    <size key="itemSize" width="124" height="124"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ImageCollectionViewCell" id="08q-La-9Yj" customClass="ImageCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="124" height="124"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                            <rect key="frame" x="0.0" y="0.0" width="124" height="124"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="llv-Eq-PUu">
+                                                    <rect key="frame" x="0.0" y="0.0" width="124" height="124"/>
+                                                </imageView>
+                                            </subviews>
+                                        </view>
+                                        <constraints>
+                                            <constraint firstItem="llv-Eq-PUu" firstAttribute="top" secondItem="08q-La-9Yj" secondAttribute="topMargin" constant="-8" id="43m-OQ-NKa"/>
+                                            <constraint firstItem="llv-Eq-PUu" firstAttribute="leading" secondItem="08q-La-9Yj" secondAttribute="leadingMargin" constant="-8" id="NDb-NI-eXu"/>
+                                            <constraint firstItem="llv-Eq-PUu" firstAttribute="centerX" secondItem="08q-La-9Yj" secondAttribute="centerX" id="Yaz-fa-xUH"/>
+                                            <constraint firstItem="llv-Eq-PUu" firstAttribute="centerY" secondItem="08q-La-9Yj" secondAttribute="centerY" id="dur-gi-Yhk"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="imageView" destination="llv-Eq-PUu" id="KvC-np-1Dm"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="mS2-7U-FOB" id="Wb6-Rw-1Y0"/>
+                                    <outlet property="delegate" destination="mS2-7U-FOB" id="pEr-PI-pDz"/>
+                                </connections>
+                            </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="9lG-lm-2SV" firstAttribute="trailing" secondItem="zIL-yY-4JU" secondAttribute="trailing" id="9bG-O1-eLK"/>
                             <constraint firstAttribute="trailing" secondItem="zIL-yY-4JU" secondAttribute="trailing" id="Itl-fH-sZM"/>
                             <constraint firstItem="zIL-yY-4JU" firstAttribute="leading" secondItem="FoM-dF-k2x" secondAttribute="leading" id="IwI-Ah-kkI"/>
+                            <constraint firstItem="9lG-lm-2SV" firstAttribute="bottom" secondItem="DgY-m4-owO" secondAttribute="bottom" id="Q3P-8p-xfY"/>
                             <constraint firstItem="zIL-yY-4JU" firstAttribute="top" secondItem="DgY-m4-owO" secondAttribute="top" id="R2x-XU-vVO"/>
+                            <constraint firstItem="9lG-lm-2SV" firstAttribute="top" secondItem="DgY-m4-owO" secondAttribute="top" constant="200" id="Syl-Ui-iJt"/>
                             <constraint firstItem="DgY-m4-owO" firstAttribute="bottom" secondItem="zIL-yY-4JU" secondAttribute="bottom" constant="446" id="d25-BD-xOW"/>
+                            <constraint firstItem="9lG-lm-2SV" firstAttribute="leading" secondItem="DgY-m4-owO" secondAttribute="leading" id="sOk-qm-Gbc"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="DgY-m4-owO"/>
                     </view>
                     <connections>
-                        <outlet property="imageView" destination="t3j-Ww-fcN" id="Q8i-AX-HwO"/>
+                        <outlet property="collectionView" destination="9lG-lm-2SV" id="vkg-IG-2e6"/>
                         <outlet property="mapView" destination="zIL-yY-4JU" id="2YZ-lX-Lel"/>
                     </connections>
                 </viewController>

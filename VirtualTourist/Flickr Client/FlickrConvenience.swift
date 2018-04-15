@@ -10,7 +10,9 @@ import UIKit
 
 extension FlickrClient {
     
-    func getPicture(latitude: Double, longitude: Double, _ completionHandlerForPicture: @escaping(_ success: Bool,_ image: UIImage?, _ errorString: String?) -> Void) {
+    
+    
+    func downloadPhotos(latitude: Double, longitude: Double, _ completionHandlerForDownloadPhotos: @escaping(_ success: Bool,_ images: [UIImage?], _ errorString: String?) -> Void) {
         
         // 1. SPECIFY THE PARAMETERS
         let parameters =
@@ -28,7 +30,7 @@ extension FlickrClient {
             
             // 3. SEND THE DESIRED VALUE(S) TO COMPLETION HANDLER
             guard (error == nil) else {
-                completionHandlerForPicture(false, nil, "Get Pictures Failed.")
+                completionHandlerForDownloadPhotos(false, [], "Cannot download photos")
                 return
             }
             
@@ -39,8 +41,8 @@ extension FlickrClient {
             }
             
             // 5. CONVERT THE JSON OBJECT RESULTS INTO USABLE FOUNATION OBJECTS
-            let image = self.convertJSONToImage(result: result)
-            completionHandlerForPicture(true, image, nil)
+            let images = self.convertJSONToImage(result: result)
+            completionHandlerForDownloadPhotos(true, images, nil)
         })
     }
     
@@ -54,29 +56,35 @@ extension FlickrClient {
         return "\(minLong), \(minLat), \(maxLong), \(maxLat)"
     }
     
-    func convertJSONToImage(result: AnyObject) -> UIImage? {
+    func convertJSONToImage(result: AnyObject) -> [UIImage?] {
         
         var image: UIImage? = nil
+        var images: [UIImage?] = []
+        var photoCount: Int = 0
         
         // 1. CONVERT THE JSON RESULT TO PHOTO DICTIONARIES AND PHOTO ARRAYS
         guard let photosDictionary = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
             print("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' in \(result)")
-           return image
+           return images
         }
         
-        let photoDictionary = photoArray[0] as [String:AnyObject]
-        
-        guard let imageURLString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
-            print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
-            return image
+        while photoCount < 21 {
+            let photoDictionary = photoArray[photoCount] as [String:AnyObject]
+            
+            guard let imageURLString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
+                print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
+                return images
+            }
+            
+            let imageURL = URL(string: imageURLString)
+            if let imageData = try? Data(contentsOf: imageURL!) {
+                image = UIImage(data: imageData)
+                images.append(image)
+                photoCount += 1
+            }
         }
-        
-        let imageURL = URL(string: imageURLString)
-        if let imageData = try? Data(contentsOf: imageURL!) {
-            image = UIImage(data: imageData)
-        }
-        
-        return image
+    
+        return images
     }
 }
 
