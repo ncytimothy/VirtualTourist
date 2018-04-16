@@ -213,6 +213,33 @@ extension TravelLocationsViewController: NSFetchedResultsControllerDelegate {
 
 extension TravelLocationsViewController: MKMapViewDelegate {
     
+    func reloadMapView() {
+        
+        if !annotations.isEmpty {
+            mapView.removeAnnotations(annotations)
+            annotations.removeAll()
+        }
+        
+        if let pins = fetchedResultsController.fetchedObjects {
+            for pin in pins {
+                // 1. RETRIEVE LOCATION DATA FROM PERSISTENT STORE
+                let lat = pin.latitude
+                let long = pin.longitude
+                // 2. CONFIGURE THE MKPointAnnotation
+                let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = coordinate
+                // 3. ADD THE ANNOTATION
+                annotations.append(annotation)
+                // 4. DISPLAY THE ANNOTIONS
+                performUIUpdatesOnMain {
+                    self.mapView.addAnnotations(self.annotations)
+                  
+                }
+            }
+        }
+    }
+    
     // CONFIGURE MKAnnotation VIEW
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let reuseId = "pin"
