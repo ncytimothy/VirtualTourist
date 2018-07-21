@@ -10,9 +10,7 @@ import UIKit
 
 extension FlickrClient {
     
-    
-    
-    func downloadPhotos(latitude: Double, longitude: Double, _ completionHandlerForDownloadPhotos: @escaping(_ success: Bool,_ images: [UIImage?], _ errorString: String?) -> Void) {
+    func downloadPhoto(latitude: Double, longitude: Double, _ completionHandlerForDownloadPhoto: @escaping(_ success: Bool,_ image: UIImage?, _ errorString: String?) -> Void) {
         
         // 1. SPECIFY THE PARAMETERS
         let parameters =
@@ -30,7 +28,7 @@ extension FlickrClient {
             
             // 3. SEND THE DESIRED VALUE(S) TO COMPLETION HANDLER
             guard (error == nil) else {
-                completionHandlerForDownloadPhotos(false, [], "Cannot download photos")
+                completionHandlerForDownloadPhoto(false, nil, "Cannot download photos")
                 return
             }
             
@@ -41,8 +39,8 @@ extension FlickrClient {
             }
             
             // 5. CONVERT THE JSON OBJECT RESULTS INTO USABLE FOUNATION OBJECTS
-            let images = self.convertJSONToImage(result: result)
-            completionHandlerForDownloadPhotos(true, images, nil)
+            let image = self.convertJSONToImage(result: result)
+            completionHandlerForDownloadPhoto(true, image, nil)
         })
     }
     
@@ -53,10 +51,12 @@ extension FlickrClient {
         let minLong = max(longitude - Constants.Flickr.SearchBoxHalfWidth, Constants.Flickr.SearchLonRange.0)
         let maxLong = min(longitude + Constants.Flickr.SearchBoxHalfWidth, Constants.Flickr.SearchLonRange.1)
         
+        print("\(minLong), \(minLat), \(maxLong), \(maxLat)")
+        
         return "\(minLong), \(minLat), \(maxLong), \(maxLat)"
     }
     
-    func convertJSONToImage(result: AnyObject) -> [UIImage?] {
+    func convertJSONToImages(result: AnyObject) -> [UIImage?] {
         
         var image: UIImage? = nil
         var images: [UIImage?] = []
@@ -85,6 +85,34 @@ extension FlickrClient {
         }
     
         return images
+    }
+    
+    func convertJSONToImage(result: AnyObject) -> UIImage? {
+        
+        var image: UIImage? = nil
+        var photoCount: Int = 0
+        
+        // 1. CONVERT THE JSON RESULT TO PHOTO DICTIONARIES AND PHOTO ARRAYS
+        guard let photosDictionary = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
+            print("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' in \(result)")
+            return image
+        }
+        
+            let photoDictionary = photoArray[photoCount] as [String:AnyObject]
+            
+            guard let imageURLString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
+                print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
+                return image
+            }
+            
+            let imageURL = URL(string: imageURLString)
+            if let imageData = try? Data(contentsOf: imageURL!) {
+                image = UIImage(data: imageData)
+//                images.append(image)
+//                photoCount += 1
+            }
+        
+        return image
     }
 }
 

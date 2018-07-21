@@ -17,9 +17,10 @@ class PhotoAlbumViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     // Dependency Injection of DataController (Implicitly Unwrapped)
     var dataController: DataController!
+    let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     // (Currently) Downloaded Images Array
-    var images: [UIImage?] = []
+    var image: UIImage?
     
 
     var annotations = [MKAnnotation]()
@@ -33,11 +34,12 @@ class PhotoAlbumViewController: UIViewController {
         collectionView.delegate = self
         print("\(pin.coordinate) in PhotoAlbumVC")
         reloadMapView()
-        FlickrClient.sharedInstance().downloadPhotos(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude) { (success, images, error) in
-            
+        FlickrClient.sharedInstance().downloadPhoto(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude) { (success, image, error) in
+            print("flickr client called")
             if success {
-                self.images = images
-                print("images.count: \(images.count)")
+                print("successful download!")
+                self.image = image
+                
                 performUIUpdatesOnMain {
                     self.collectionView.reloadData()
                 }
@@ -46,6 +48,7 @@ class PhotoAlbumViewController: UIViewController {
         
         // Do any additional setup after loading the view.
     }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -107,19 +110,34 @@ extension PhotoAlbumViewController: MKMapViewDelegate {
     }
 }
 
-extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("images.count: \(images.count)")
-        return images.count
+//        print("images.count: \(images.count)")
+        return 21
     }
     
+   
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
+        print("cellForItemAt called")
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCollectionViewCell", for: indexPath) as! ImageCollectionViewCell
-        cell.imageView.image = images[(indexPath.row)]
+       
+       
+        activityIndicator.startAnimating()
+    
+        
+        if let image = image {
+            cell.imageView.image = image
+
+        }
+        
         return cell
     }
     
 }
+
+
+
+

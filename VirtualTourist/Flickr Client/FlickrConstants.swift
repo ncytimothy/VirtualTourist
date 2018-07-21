@@ -18,8 +18,8 @@ extension FlickrClient {
             static let APIHost = "api.flickr.com"
             static let APIPath = "/services/rest"
             
-            static let SearchBoxHalfWidth = 0.3
-            static let SearchBoxHalfHeight = 0.3
+            static let SearchBoxHalfWidth = 0.005
+            static let SearchBoxHalfHeight = 0.005
             static let SearchLatRange = (-90.0, 90.0)
             static let SearchLonRange = (-180.0, 180.0)
         }
