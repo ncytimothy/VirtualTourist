@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     // DataController property for persistent store
-    let dataController = DataController(modelName: "VirtualTourist")
+    let dataController = DataController(modelName: "VirtualTourist-Demo")
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Call dataController.load() to load persistent store

@@ -21,7 +21,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     let loader: UIActivityIndicatorView = {
         let loader = UIActivityIndicatorView()
-        loader.color = UIColor.red
+        loader.color = UIColor.white
         return loader
     }()
     
@@ -33,24 +33,46 @@ class ImageCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-      //TODO: Constraints for ImageView
-   
+    let colorOverlay: UIView = {
+        let colorOverlay = UIView()
+        colorOverlay.backgroundColor = UIColor.rgb(red: 55, green: 54, blue: 56, alpha: 0.85)
+        return colorOverlay
+    }()
+    
+    let checkmark: UIImageView = {
+        let checkmark = UIImageView()
+        checkmark.image = UIImage(named: "check")
+        return checkmark
+    }()
+    
     func setupViews() {
         
         addSubview(imageView)
+        addSubview(colorOverlay)
         addSubview(loader)
-       
+        addSubview(checkmark)
+        
+        checkmark.isHidden = true
         loader.startAnimating()
         
         addConstraintsWith(format: "H:|[v0]|", views: loader)
         addConstraintsWith(format: "H:|[v0]|", views: imageView)
+        addConstraintsWith(format: "H:|[v0]|", views: colorOverlay)
+        addConstraintsWith(format: "H:[v0]-8-|", views: checkmark)
         
         addConstraintsWith(format: "V:|[v0]|", views: loader)
         addConstraintsWith(format: "V:|[v0]|", views: imageView)
-        
-        
-        
+        addConstraintsWith(format: "V:|[v0]|", views: colorOverlay)
+        addConstraintsWith(format: "V:[v0]-8-|", views: checkmark)
     }
+}
+
+extension UIColor {
+    
+    static func rgb(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat = 1) -> UIColor {
+        return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: alpha)
+    }
+    
 }
 
 extension UIView {

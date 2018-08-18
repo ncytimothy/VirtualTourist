@@ -7,19 +7,21 @@
 //
 
 import Foundation
+import CoreData
 
 class FlickrClient: NSObject {
 
-    // MARK: Properties
+    // MARK: - Properties
     
     // URL Shared Session
     var session = URLSession.shared
-    
+        
     // MARK: - GET
     func taskForGETMethod(_ parameters: [String:AnyObject], completionHandlerForGET: @escaping(_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
         
         // 1. BUILD THE URL, CONFIGURE THE REQUEST
         let request = URLRequest(url: flickrURL(parameters))
+        print("flickrURL(parameters): \(flickrURL(parameters))")
         
         
         // 2. MAKE THE REQUEST

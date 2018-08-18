@@ -77,9 +77,10 @@ extension DataController {
     
     func autoSaveViewContext(interval: TimeInterval = 30) {
         // TimeInterval PARAMETER VALUE DEFAULTED TO 30s
+         print("autosaving...")
         
         // 1. GUARD POSITIVE TIME INTERVALS
-        guard interval > 30 else {
+        guard interval > 0 else {
             print("Cannot save negative intervals")
             return
         }

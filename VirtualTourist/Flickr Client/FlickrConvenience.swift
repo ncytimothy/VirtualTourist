@@ -7,8 +7,10 @@
 //
 
 import UIKit
+import CoreData
 
 extension FlickrClient {
+    
     
     func downloadPhoto(latitude: Double, longitude: Double, _ completionHandlerForDownloadPhoto: @escaping(_ success: Bool,_ image: UIImage?, _ errorString: String?) -> Void) {
         
@@ -74,6 +76,7 @@ extension FlickrClient {
             
             // 5. CONVERT THE JSON OBJECT RESULTS INTO USABLE FOUNATION OBJECTS
             let images = self.convertJSONToImages(result: result)
+//            print("images before completion handler: \()")
             
             // (Current) Handling images (data) towards the completion handler
             // I don't want that
@@ -99,7 +102,7 @@ extension FlickrClient {
         
         var image: UIImage? = nil
         var images: [UIImage?] = []
-        var photoCount: Int = 0
+     
         
         // 1. CONVERT THE JSON RESULT TO PHOTO DICTIONARIES AND PHOTO ARRAYS
         guard let photosDictionary = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
@@ -107,8 +110,15 @@ extension FlickrClient {
            return images
         }
         
-        while photoCount < 21 {
-            let photoDictionary = photoArray[photoCount] as [String:AnyObject]
+                print("photoArray.count: \(photoArray.count)")
+      
+        
+        print("images.count: \(images.count)")
+        print("images: \(images)")
+        while images.count < 21 {
+            let photoIndex: Int = Int(arc4random_uniform(UInt32(photoArray.count)))
+            print("photoIndex: \(photoIndex)")
+            let photoDictionary = photoArray[photoIndex] as [String:AnyObject]
             
             guard let imageURLString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
                 print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
@@ -116,20 +126,25 @@ extension FlickrClient {
             }
             
             let imageURL = URL(string: imageURLString)
+//            print("imageURLString: \(imageURLString)")
             if let imageData = try? Data(contentsOf: imageURL!) {
                 image = UIImage(data: imageData)
+                print("image: \(String(describing: image))")
+                print("appending...")
+                
                 images.append(image)
-                photoCount += 1
+                print("images: \(images)")
             }
+           
         }
-    
         return images
     }
+
     
     func convertJSONToImage(result: AnyObject) -> UIImage? {
         
         var image: UIImage? = nil
-        var photoCount: Int = 0
+        
         
         // 1. CONVERT THE JSON RESULT TO PHOTO DICTIONARIES AND PHOTO ARRAYS
         guard let photosDictionary = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
@@ -137,7 +152,10 @@ extension FlickrClient {
             return image
         }
         
-            let photoDictionary = photoArray[photoCount] as [String:AnyObject]
+        let photoIndex: Int = Int(arc4random_uniform(UInt32(photoArray.count)))
+        
+        if !photoArray.isEmpty {
+            let photoDictionary = photoArray[photoIndex] as [String:AnyObject]
             
             guard let imageURLString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
                 print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
@@ -145,12 +163,14 @@ extension FlickrClient {
             }
             
             let imageURL = URL(string: imageURLString)
+            print("imageURLString: \(imageURLString)")
             if let imageData = try? Data(contentsOf: imageURL!) {
                 image = UIImage(data: imageData)
-//                images.append(image)
-//                photoCount += 1
+                //                images.append(image)
+                //                photoCount += 1
             }
-        
+        }
+    
         return image
     }
 }

@@ -286,6 +286,8 @@ extension TravelLocationsViewController: MKMapViewDelegate {
         photoAlbumVC.dataController = dataController
         completionHandler(photoAlbumVC)
     }
+    
+    
 }
 
 
