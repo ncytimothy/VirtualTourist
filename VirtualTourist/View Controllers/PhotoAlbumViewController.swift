@@ -27,10 +27,12 @@ class PhotoAlbumViewController: UIViewController {
     // Fixed Collection View Cells Count
     let cellsCount: Int = 21
     
-    // Selected Cells Count
-    var selectedCellsCount: Int = 0
     
-    @IBOutlet weak var bottomButton: UIButton!
+    var bottomButton: UIButton = {
+        let bottomButton = UIButton()
+        bottomButton.titleLabel?.text = "New Collection"
+        return bottomButton
+    }()
     
     
 //    // Placeholder Loader
@@ -68,6 +70,8 @@ class PhotoAlbumViewController: UIViewController {
         setUpFetchedResultsController()
         print("\(pin.coordinate) in PhotoAlbumVC")
         reloadMapView()
+        
+        updateButtonLabel()
     
         setUpCollectionViewFlowLayout()
         
@@ -542,6 +546,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
         let selectedOverlayColor = UIColor.rgb(red: 242, green: 242, blue: 242, alpha: 0.85)
       
         updateSelectUI(cell: cell)
+        updateButtonLabel()
       
 //        cell.checkmark.isHidden = cell.isChecked ? false : true
 
@@ -577,6 +582,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
         let deselectedOverlayColor = UIColor.rgb(red: 255, green: 255, blue: 255, alpha: 0)
         
         updateSelectUI(cell: cell)
+        updateButtonLabel()
         
 
     }
@@ -590,7 +596,13 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
 //    }
 //
     func updateButtonLabel() {
-        print("selectedCellsCount: \(selectedCellsCount)")
+        
+        print("collectionView.indexPathsForSelectedItems?.isEmpty: \(String(describing: collectionView.indexPathsForSelectedItems?.isEmpty))")
+        
+        if (collectionView.indexPathsForSelectedItems?.isEmpty)! {
+            print("TRUE")
+            bottomButton.titleLabel?.text = "New Collection"
+        }
         
     }
     

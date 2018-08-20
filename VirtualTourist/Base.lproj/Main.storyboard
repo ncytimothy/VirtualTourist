@@ -80,7 +80,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" pitchEnabled="NO" showsBuildings="NO" showsCompass="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zIL-yY-4JU">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" pitchEnabled="NO" showsBuildings="NO" showsCompass="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zIL-yY-4JU">
                                 <rect key="frame" x="0.0" y="20" width="375" height="201"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="201" id="Wa3-KE-a91"/>
@@ -89,7 +89,7 @@
                                     <outlet property="delegate" destination="mS2-7U-FOB" id="Qtx-6S-QFD"/>
                                 </connections>
                             </mapView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="9lG-lm-2SV">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="9lG-lm-2SV">
                                 <rect key="frame" x="0.0" y="220" width="375" height="385"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="lHU-Ck-rhR" customClass="CollectionViewFlowLayout" customModule="VirtualTourist" customModuleProvider="target">
@@ -104,31 +104,16 @@
                                     <outlet property="delegate" destination="mS2-7U-FOB" id="pEr-PI-pDz"/>
                                 </connections>
                             </collectionView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dn7-Hd-vbC">
-                                <rect key="frame" x="0.0" y="604" width="375" height="63"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="63" id="XNb-Ud-FhE"/>
-                                </constraints>
-                                <state key="normal" title="New Collection"/>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="dn7-Hd-vbC" firstAttribute="leading" secondItem="FoM-dF-k2x" secondAttribute="leading" id="Cc4-ki-NIQ"/>
-                            <constraint firstItem="dn7-Hd-vbC" firstAttribute="leading" secondItem="zIL-yY-4JU" secondAttribute="leading" id="PmM-HO-RUU"/>
-                            <constraint firstItem="dn7-Hd-vbC" firstAttribute="trailing" secondItem="9lG-lm-2SV" secondAttribute="trailing" id="SNZ-Tb-7JA"/>
                             <constraint firstItem="DgY-m4-owO" firstAttribute="bottom" secondItem="9lG-lm-2SV" secondAttribute="bottom" constant="62" id="TSs-xz-CMc"/>
                             <constraint firstItem="9lG-lm-2SV" firstAttribute="top" secondItem="DgY-m4-owO" secondAttribute="top" constant="200" id="TcJ-v9-HrA"/>
-                            <constraint firstItem="dn7-Hd-vbC" firstAttribute="leading" secondItem="9lG-lm-2SV" secondAttribute="leading" id="Yd5-hl-x8u"/>
                             <constraint firstItem="zIL-yY-4JU" firstAttribute="top" secondItem="DgY-m4-owO" secondAttribute="top" id="aI4-zr-ofa"/>
-                            <constraint firstItem="dn7-Hd-vbC" firstAttribute="bottom" secondItem="DgY-m4-owO" secondAttribute="bottom" id="dk0-5k-rsK"/>
-                            <constraint firstAttribute="trailing" secondItem="dn7-Hd-vbC" secondAttribute="trailing" id="gib-Y8-4jZ"/>
-                            <constraint firstItem="dn7-Hd-vbC" firstAttribute="trailing" secondItem="zIL-yY-4JU" secondAttribute="trailing" id="qSb-1q-fHg"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="DgY-m4-owO"/>
                     </view>
                     <connections>
-                        <outlet property="bottomButton" destination="dn7-Hd-vbC" id="zRA-wY-sbT"/>
                         <outlet property="collectionView" destination="9lG-lm-2SV" id="vkg-IG-2e6"/>
                         <outlet property="mapView" destination="zIL-yY-4JU" id="2YZ-lX-Lel"/>
                     </connections>
