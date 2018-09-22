@@ -15,8 +15,7 @@ class TravelLocationsViewController: UIViewController {
 
     // MARK: - Properties
     @IBOutlet var mapView: MKMapView!
-   
-    
+
     // Data Controller property from AppDelegate.swift
     var dataController: DataController!
 
@@ -32,6 +31,9 @@ class TravelLocationsViewController: UIViewController {
     
     // SELECTED ANNOTATION POINT ANNOTATION
     var selectedAnnotation: MKPointAnnotation?
+    
+    // Alphabet Testing
+     let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V"]
     
     // MARK: Configure Delete Prompt
     fileprivate func configureDeletePrompt() {
@@ -101,10 +103,14 @@ class TravelLocationsViewController: UIViewController {
         
         setUpFetchedResultsController()
         
+        // Set up mapView Constraints
+        
         // Set right button navigation item to system default edit button item
         self.navigationItem.rightBarButtonItem = self.editButtonItem
         configureDeletePrompt()
         configureDeleteLabel()
+        
+        
        
     }
     
@@ -156,6 +162,7 @@ class TravelLocationsViewController: UIViewController {
         // Toggle the mapViewIsShift boolean
         mapViewIsShift = !mapViewIsShift
         editAnimation(mapViewIsShift)
+        
     }
     
 //     MARK: - Actions
@@ -279,6 +286,7 @@ extension TravelLocationsViewController: MKMapViewDelegate {
         }
     }
     
+    
     // MARK: - Prepare for Segue to Photo Album VC
     func prepare(pin: Pin, _ completionHandler: @escaping (_ photoAlbumVC: PhotoAlbumViewController) -> Void) {
          let photoAlbumVC = storyboard?.instantiateViewController(withIdentifier: "PhotoAlbumVC") as! PhotoAlbumViewController
@@ -286,9 +294,6 @@ extension TravelLocationsViewController: MKMapViewDelegate {
         photoAlbumVC.dataController = dataController
         completionHandler(photoAlbumVC)
     }
-    
-    
 }
-
 
 

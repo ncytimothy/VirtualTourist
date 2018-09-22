@@ -80,7 +80,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" pitchEnabled="NO" showsBuildings="NO" showsCompass="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zIL-yY-4JU">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" pitchEnabled="NO" showsBuildings="NO" showsCompass="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zIL-yY-4JU">
                                 <rect key="frame" x="0.0" y="20" width="375" height="201"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="201" id="Wa3-KE-a91"/>
@@ -89,7 +89,7 @@
                                     <outlet property="delegate" destination="mS2-7U-FOB" id="Qtx-6S-QFD"/>
                                 </connections>
                             </mapView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="9lG-lm-2SV">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="9lG-lm-2SV">
                                 <rect key="frame" x="0.0" y="220" width="375" height="385"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="lHU-Ck-rhR" customClass="CollectionViewFlowLayout" customModule="VirtualTourist" customModuleProvider="target">
@@ -104,16 +104,31 @@
                                     <outlet property="delegate" destination="mS2-7U-FOB" id="pEr-PI-pDz"/>
                                 </connections>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VVy-Ny-qtA">
+                                <rect key="frame" x="94" y="622" width="189" height="30"/>
+                                <state key="normal" title="Remove Selected Images"/>
+                                <connections>
+                                    <action selector="bottomButtonPressed:" destination="mS2-7U-FOB" eventType="touchUpInside" id="6ct-ic-zcY"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="zIL-yY-4JU" firstAttribute="trailing" secondItem="9lG-lm-2SV" secondAttribute="trailing" id="0qQ-Nc-WhP"/>
+                            <constraint firstItem="zIL-yY-4JU" firstAttribute="leading" secondItem="FoM-dF-k2x" secondAttribute="leading" id="2pQ-ja-9Xu"/>
                             <constraint firstItem="DgY-m4-owO" firstAttribute="bottom" secondItem="9lG-lm-2SV" secondAttribute="bottom" constant="62" id="TSs-xz-CMc"/>
                             <constraint firstItem="9lG-lm-2SV" firstAttribute="top" secondItem="DgY-m4-owO" secondAttribute="top" constant="200" id="TcJ-v9-HrA"/>
                             <constraint firstItem="zIL-yY-4JU" firstAttribute="top" secondItem="DgY-m4-owO" secondAttribute="top" id="aI4-zr-ofa"/>
+                            <constraint firstAttribute="trailing" secondItem="zIL-yY-4JU" secondAttribute="trailing" id="j26-i4-boK"/>
+                            <constraint firstItem="zIL-yY-4JU" firstAttribute="leading" secondItem="9lG-lm-2SV" secondAttribute="leading" id="sZh-NG-Ir5"/>
+                            <constraint firstItem="VVy-Ny-qtA" firstAttribute="top" secondItem="9lG-lm-2SV" secondAttribute="bottom" constant="17" id="wxL-cd-yDv"/>
+                            <constraint firstItem="DgY-m4-owO" firstAttribute="trailing" secondItem="VVy-Ny-qtA" secondAttribute="trailing" constant="92" id="yGB-YX-Q22"/>
+                            <constraint firstItem="VVy-Ny-qtA" firstAttribute="leading" secondItem="DgY-m4-owO" secondAttribute="leading" constant="94" id="zgq-va-Fd7"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="DgY-m4-owO"/>
                     </view>
                     <connections>
+                        <outlet property="bottomButton" destination="VVy-Ny-qtA" id="LF7-6h-KSK"/>
                         <outlet property="collectionView" destination="9lG-lm-2SV" id="vkg-IG-2e6"/>
                         <outlet property="mapView" destination="zIL-yY-4JU" id="2YZ-lX-Lel"/>
                     </connections>

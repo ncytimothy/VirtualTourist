@@ -11,10 +11,13 @@ import CoreData
 
 class FlickrClient: NSObject {
 
-    // MARK: - Properties
+// -------------------------------------------------------------------------
+// MARK: - Properties
     
     // URL Shared Session
     var session = URLSession.shared
+//    
+// -------------------------------------------------------------------------
         
     // MARK: - GET
     func taskForGETMethod(_ parameters: [String:AnyObject], completionHandlerForGET: @escaping(_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {

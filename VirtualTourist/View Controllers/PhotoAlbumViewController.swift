@@ -25,26 +25,25 @@ class PhotoAlbumViewController: UIViewController {
     var annotations = [MKAnnotation]()
     
     // Fixed Collection View Cells Count
-    let cellsCount: Int = 21
     
+    enum CollectionViewConstants {
+        static let cellsCount: Int = 21
+    }
     
-    var bottomButton: UIButton = {
-        let bottomButton = UIButton()
-        bottomButton.titleLabel?.text = "New Collection"
-        return bottomButton
-    }()
+    enum ViewControllerConstants {
+        static let alert = UIAlertController(title: nil, message: "Please wait...", preferredStyle: .alert)
+    }
     
+    // Alert View Controller
     
-//    // Placeholder Loader
-//    let loader: UIActivityIndicatorView = {
-//        let loader = UIActivityIndicatorView()
-//        loader.color = UIColor.red
-//        return loader
-//    }()
+    @IBOutlet weak var bottomButton: UIButton!
     
+    @IBOutlet weak var bottomLabel: UILabel!
+    
+
     // Dependency Injection of DataController (Implicitly Unwrapped)
     var dataController: DataController!
-//    let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+
     
     // Outlets
     @IBOutlet weak var collectionView: UICollectionView!
@@ -56,22 +55,29 @@ class PhotoAlbumViewController: UIViewController {
     // FETCHED RESULTS CONTROLLER PERSISTS OVER THE LIFETIME OF THE VIEW CONTROLLER
     // NEED TO SPECIFY THE MANAGED OBJECT (GENERIC TYPE)
 
-    // (Currently) Downloaded Images Array
-    var image: UIImage?
-    var images: [UIImage?] = []
+    // Alphabet Debug Array
+    let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V"]
     
 // -------------------------------------------------------------------------
 // MARK: - Lifecycle
     
+ 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Set up collectionView
         collectionView.delegate = self
         collectionView.allowsMultipleSelection = true
+      
+        
         setUpFetchedResultsController()
-        print("\(pin.coordinate) in PhotoAlbumVC")
+        
         reloadMapView()
         
         updateButtonLabel()
+        
+//        presentLoadingAlert()
     
         setUpCollectionViewFlowLayout()
         
@@ -83,74 +89,14 @@ class PhotoAlbumViewController: UIViewController {
         print("pin.photos.allObjects: \(pin.photos?.allObjects)")
         
      
+//        downloadPhotos()
+      
         
-  
-// -------------------------------------------------------------------------
-        addPhotos()
-// -------------------------------------------------------------------------
-        
-//        if (pin.photos?.allObjects.isEmpty)! {
-//            FlickrClient.sharedInstance().downloadPhotos(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, { (success, images, error) in
-//
-//                if success {
-//                    print("download success!")
-//                    for image in images {
-//                        if let image = image {
-//                            let imageData = UIImagePNGRepresentation(image)
-//                            let photo = Photo(context: self.dataController.viewContext)
-//                            photo.imageData = imageData
-//
-//
-//                            do {
-//                                try self.dataController.viewContext.save()
-//                                print("saving JENN")
-//                            } catch {
-//                                let alert = UIAlertController(title: "Cannot save photo", message: "Your photo cannot be saved at the moment", preferredStyle: .alert)
-//                                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-//                                alert.addAction(okAction)
-//                            }
-//
-//                        }
-//                    }
-//                }
-//            })
-//        }
-        
-//        FlickrClient.sharedInstance().downloadPhotos(latitude: self.pin.coordinate.latitude, longitude: self.pin.coordinate.longitude, { (success, images, error) in
-//            print("flickr client called")
-//            if success {
-//                print("successful download")
-//                self.images = images
-//                print("images in VC: \(images)")
-//
-//                performUIUpdatesOnMain {
-//                    self.collectionView.reloadData()
-//                }
-//
-//            }
-//        })
-        
-        
-//
-//        FlickrClient.sharedInstance().downloadPhotos(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, { (success, images, error) in
-//            print("flickr client called")
-//            if success {
-//                print("successful download!")
-//                self.images = images
-//            }
-//        })
-
-//        FlickrClient.sharedInstance().downloadPhoto(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude) { (success, image, error) in
-//            print("flickr client called")
-//            if success {
-//                print("successful download!")
-//                self.image = image
-//
-//                performUIUpdatesOnMain {
-//                    self.collectionView.reloadData()
-//                }
-//            }
-//        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+         addDebugPhotos()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -168,8 +114,8 @@ class PhotoAlbumViewController: UIViewController {
         fetchedResultsController = nil
     }
     
-    // -------------------------------------------------------------------------
-    // MARK: - Fetched Results Controller Setup
+// -------------------------------------------------------------------------
+// MARK: - Fetched Results Controller Setup
     
     fileprivate func setUpFetchedResultsController() {
         
@@ -183,7 +129,11 @@ class PhotoAlbumViewController: UIViewController {
         }
         
         // 3b. Configure the Fetch Request with Sort Rules
-        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: true)
+        
+        // Previously
+//        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: true)
+        
         fetchRequest.sortDescriptors = [sortDescriptor]
         
         // 3c. Instantiate the fetchResultsController using fetchRequest
@@ -203,9 +153,143 @@ class PhotoAlbumViewController: UIViewController {
         fetchedResultsController.delegate = self
       
     }
-    
-}
 
+// -------------------------------------------------------------------------
+// MARK: - Helpers
+    fileprivate func downloadPhotos() {
+        
+        var downloadCount: Int = 0
+        
+        while downloadCount < CollectionViewConstants.cellsCount {
+            print("downloadCount: \(downloadCount)")
+            addPhoto()
+            downloadCount += 1
+        }
+    }
+    
+    fileprivate func presentLoadingAlert() {
+        
+        let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
+        loadingIndicator.hidesWhenStopped = true
+        loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        loadingIndicator.startAnimating()
+        
+        ViewControllerConstants.alert.view.addSubview(loadingIndicator)
+        present(ViewControllerConstants.alert, animated: true, completion: nil)
+        
+    }
+  
+// -------------------------------------------------------------------------
+// MARK: - Actions
+    
+    @IBAction func bottomButtonPressed(_ sender: Any) {
+
+        if bottomButton.titleLabel?.text == "Remove Selected Images" {
+            deleteImages { (success) in
+                if success {
+                    self.bottomButton.setTitle("New Collection", for: .normal)
+                }
+            }
+        }
+        
+        if bottomButton.titleLabel?.text == "New Collection" {
+            deleteAllImages()
+//            presentLoadingAlert()
+            // Make sure that the collection view is not scrollable when refreshed
+            collectionView.isScrollEnabled = false
+            
+            downloadPhotos()
+            
+//            addDebugPhotos()
+//            updateDebugPhotos()
+            
+            collectionView.isScrollEnabled = true
+            
+            if let imagesStored = fetchedResultsController.fetchedObjects {
+                for imageStore in imagesStored {
+                    print("Image UUID: \(imageStore.uuid!)")
+                }
+            }
+        }
+    }
+// -------------------------------------------------------------------------
+// MARK: - Delete Images
+    
+func deleteImages(completionHandler: @escaping(_ success: Bool) -> Void) {
+    
+    // UUID of selected items
+    var uuidArray: [String] = []
+    
+    // Get all selected objects in collectionView
+    if let indexPathForSelectedItems = collectionView.indexPathsForSelectedItems {
+        print("indexPathSelectedItems in deleteImages: \(indexPathForSelectedItems)")
+        
+        
+        for indexPath in indexPathForSelectedItems {
+            
+            // Get image to delete
+            let imageToDelete = fetchedResultsController.object(at: indexPath)
+            
+            // Get UUID of imageToDelete
+            if let uuidToDelete = imageToDelete.uuid {
+                print("uuidToDelete: \(uuidToDelete)")
+                uuidArray.append(uuidToDelete)
+            }
+            
+            print("uuidArray: \(uuidArray)")
+        }
+        
+        for uuid in uuidArray {
+            
+            if let imagesToDelete = fetchedResultsController.fetchedObjects {
+                for imageToDelete in imagesToDelete {
+                    if imageToDelete.uuid == uuid {
+                        dataController.viewContext.delete(imageToDelete)
+                        
+                        do {
+                            try dataController.viewContext.save()
+                            completionHandler(true)
+                        } catch {
+                            print("Cannot delete photo!")
+                            completionHandler(false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+            
+    
+    func deleteAllImages() {
+        
+        collectionView.isScrollEnabled = false
+        
+//        for cell in collectionView.visibleCells {
+//            if let cell = cell as? ImageCollectionViewCell {
+//                cell.colorOverlay.backgroundColor = UIColor.rgb(red: 55, green: 54, blue: 56, alpha: 0.85)
+//                cell.loader.startAnimating()
+//            }
+//        }
+
+        print("Delete All Images")
+        
+        if let imagesToDelete = fetchedResultsController.fetchedObjects {
+            for imageToDelete in imagesToDelete {
+//                    dataController.viewContext.delete(imageToDelete)
+                let defaultImage = UIImage(named: "white-bg")
+                let defaultImageData = UIImagePNGRepresentation(defaultImage!)
+                imageToDelete.imageData = defaultImageData
+                do {
+                    try dataController.viewContext.save()
+                } catch {
+                    print("Cannot delete image!")
+                }
+            }
+            collectionView.isScrollEnabled = true
+        }
+    }
+}
 
 
 // -------------------------------------------------------------------------
@@ -220,21 +304,25 @@ extension PhotoAlbumViewController: MKMapViewDelegate {
             annotations.removeAll()
         }
         
-        // 1. RETRIEVE LOCATION DATA FROM PASSED PIN
+        // 1. Retrieve Location Data from passed pin
         let lat = pin.latitude
         let long = pin.longitude
         
-        // 2. CONFIGURE THE MKPointAnnotation
+        // 2. Configure the MKPointAnnotation
         let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
         
-        // 3. ADD THE ANNOTATION
+        // 3. Add the Annotation
         annotations.append(annotation)
+        
+        // 4. Adjust the region to the pin's coordinates
+        let region = MKCoordinateRegion(center: annotation.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
         
         // 4. DISPLAY THE ANNOTATIONS
         performUIUpdatesOnMain {
             self.mapView.addAnnotations(self.annotations)
+            self.mapView.region = region
         }
         
     }
@@ -260,8 +348,10 @@ extension PhotoAlbumViewController: MKMapViewDelegate {
 
 extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
+    //NEEDED
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return fetchedResultsController.sections?.count ?? 1
+//        return fetchedResultsController.sections?.count ?? 1
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -272,7 +362,12 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
 //            return 21
 //        }
 
-        return fetchedResultsController.sections?[section].numberOfObjects ?? 21
+    
+        return fetchedResultsController.sections?[section].numberOfObjects ?? CollectionViewConstants.cellsCount
+        
+        //NEEDED
+//        return fetchedResultsController.sections?[section].numberOfObjects ?? 21
+//         return fetchedResultsController.sections?[section].numberOfObjects ?? 21
     }
     
     func addPhoto() {
@@ -281,106 +376,184 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
             return
         }
         
-        FlickrClient.sharedInstance().downloadPhoto(latitude: pin.coordinate.longitude, longitude: pin.coordinate.longitude, { (success, image, error) in
+        FlickrClient.sharedInstance().downloadPhoto(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, dataController: dataController, pin: pin) { (success, error) in
             
-            var downloadCount: Int = 0
-            
-            while downloadCount < 21 {
-                if let image = image {
-                    let imageData = UIImagePNGRepresentation(image)
-                    let photo = Photo(context: self.dataController.viewContext)
-                    photo.imageData = imageData
-                    photo.pin = self.pin
-                    
-                    do {
-                        try self.dataController.viewContext.save()
-                        downloadCount += 1
-                        print("saving...")
-                    } catch {
-                        let alert = UIAlertController(title: "Cannot save photo", message: "Your photo cannot be saved at the moment", preferredStyle: .alert)
-                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                        alert.addAction(okAction)
-                    }
-                }
+            if success {
+                print("Success!")
+                
             }
-        })
-        
-        //            FlickrClient.sharedInstance().downloadPhoto(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, { (success, image, error) in
-        //
-        //                if let image = image {
-        //
-        //                    let imageData = UIImagePNGRepresentation(image)
-        //                    let photo = Photo(context: self.dataController.viewContext)
-        //                    photo.imageData = imageData
-        //
-        //
-        ////                    let image = Photo(context: self.dataController.viewContext)
-        //
-        //                    do {
-        //                        try self.dataController.viewContext.save()
-        //                        print("saving image...")
-        //                    } catch {
-        //                        let alert = UIAlertController(title: "Cannot save photo", message: "Your photo cannot be saved at the moment.", preferredStyle: .alert)
-        //                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        //                        alert.addAction(okAction)
-        //                    }
-        //
-        //                    performUIUpdatesOnMain {
-        //
-        //                        if let imageData = self.fetchedResultsController.object(at: indexPath).imageData {
-        //                            cell.imageView.image = UIImage(data: imageData)
-        //                            cell.colorOverlay.backgroundColor = UIColor.rgb(red: 255, green: 255, blue: 255, alpha: 0)
-        //                            cell.loader.stopAnimating()
-        //
-        //                        }
-        //                    }
-        //                }
-        //            })
-        
-        
+        }
         
     }
-    
-    
-    fileprivate func addPhotos() {
+  
+    func addPhoto(_ completionHandlerForAddPhoto: @escaping (_ success: Bool) -> Void) {
+
         guard (fetchedResultsController.fetchedObjects?.isEmpty)! else {
             return
         }
         
-        
-            FlickrClient.sharedInstance().downloadPhotos(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, { (success, images, error) in
-                
-                
+            FlickrClient.sharedInstance().downloadPhoto(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, dataController: dataController, pin: pin) { (success, error) in
                 
                 if success {
-                    print("download success!")
-                    
-                    
-                    for image in images {
-                        if let image = image {
-                            let imageData = UIImagePNGRepresentation(image)
-                            let photo = Photo(context: self.dataController.viewContext)
-                            photo.imageData = imageData
-                            photo.pin = self.pin
-                            print("(photo.pin.coordinates.latitude, photo.pin.coordinate.longitude): (\(self.pin.coordinate.latitude), \(self.pin.coordinate.longitude))")
-                            
-                            do {
-                                try self.dataController.viewContext.save()
-                                print("saving JENN")
-                              
-                              
-                            } catch {
-                                let alert = UIAlertController(title: "Cannot save photo", message: "Your photo cannot be saved at the moment", preferredStyle: .alert)
-                                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                                alert.addAction(okAction)
-                            }
-                            
-                        }
-                    }
+                    print("Success!")
+                    completionHandlerForAddPhoto(true)
                 }
-            })
+        }
     }
     
+//        FlickrClient.sharedInstance().downloadPhoto(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, dataController: dataController, pin: pin, { (success, image, error) in
+//
+//
+//            if success {
+//                print("Jennifer is soooo pretty!!")
+//            }
+//
+//
+//
+////            var downloadCount: Int = 0
+////
+////            while downloadCount < 21 {
+////                if let image = image {
+////                    let imageData = UIImagePNGRepresentation(image)
+////                    let photo = Photo(context: self.dataController.viewContext)
+////                    photo.imageData = imageData
+////                    photo.creationDate = Date()
+////                    photo.pin = self.pin
+////
+////                    do {
+////                        try self.dataController.viewContext.save()
+////                        downloadCount += 1
+////                        print("saving...")
+////                    } catch {
+////                        let alert = UIAlertController(title: "Cannot save photo", message: "Your photo cannot be saved at the moment", preferredStyle: .alert)
+////                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+////                        alert.addAction(okAction)
+////                    }
+////                }
+////            }
+//        })
+//
+//        //            FlickrClient.sharedInstance().downloadPhoto(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, { (success, image, error) in
+//        //
+//        //                if let image = image {
+//        //
+//        //                    let imageData = UIImagePNGRepresentation(image)
+//        //                    let photo = Photo(context: self.dataController.viewContext)
+//        //                    photo.imageData = imageData
+//        //
+//        //
+//        ////                    let image = Photo(context: self.dataController.viewContext)
+//        //
+//        //                    do {
+//        //                        try self.dataController.viewContext.save()
+//        //                        print("saving image...")
+//        //                    } catch {
+//        //                        let alert = UIAlertController(title: "Cannot save photo", message: "Your photo cannot be saved at the moment.", preferredStyle: .alert)
+//        //                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//        //                        alert.addAction(okAction)
+//        //                    }
+//        //
+//        //                    performUIUpdatesOnMain {
+//        //
+//        //                        if let imageData = self.fetchedResultsController.object(at: indexPath).imageData {
+//        //                            cell.imageView.image = UIImage(data: imageData)
+//        //                            cell.colorOverlay.backgroundColor = UIColor.rgb(red: 255, green: 255, blue: 255, alpha: 0)
+//        //                            cell.loader.stopAnimating()
+//        //
+//        //                        }
+//        //                    }
+//        //                }
+//        //            })
+//
+//    }
+    
+    func updateDebugPhotos() {
+        
+        if let imagesToDelete = fetchedResultsController.fetchedObjects {
+            for imageToDelete in imagesToDelete {
+                for letter in alphabet {
+                    let letter = UIImage(named: letter)
+                    let letterImageData = UIImagePNGRepresentation(letter!)
+                    imageToDelete.imageData = letterImageData
+                    imageToDelete.pin = self.pin
+                    imageToDelete.uuid = UUID().uuidString
+                    do {
+                        try dataController.viewContext.save()
+                    } catch {
+                        print("Cannot delete image!")
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    func addDebugPhotos() {
+        
+        print("debugPhotos fRC.objects: \(String(describing: fetchedResultsController.fetchedObjects))")
+        print("collectionViewCells: \(collectionView.visibleCells)")
+        
+        // Previously, to prevent repetition, think of another way to do it
+        guard (fetchedResultsController.fetchedObjects?.isEmpty)! else {
+            return
+        }
+        
+        print("Jen Brice")
+        
+        for letter in alphabet {
+            print("downloading")
+            let debugImage = UIImage(named: letter)
+            if let debugImage = debugImage {
+                let imageData = UIImagePNGRepresentation(debugImage)
+                let photo = Photo(context: self.dataController.viewContext)
+                photo.imageData = imageData
+                photo.pin = self.pin
+                photo.uuid = UUID().uuidString
+                print("(photo.pin.coordinates.latitude, photo.pin.coordinate.longitude): (\(self.pin.coordinate.latitude), \(self.pin.coordinate.longitude))")
+                
+                do {
+                    try self.dataController.viewContext.save()
+                    print("saving JENN")
+                } catch {
+                    let alert = UIAlertController(title: "Cannot save photo", message: "Your photo cannot be saved at the moment", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alert.addAction(okAction)
+                }
+            }
+        }
+    }
+    
+    func addDebugPhotos(completionHandler: @escaping (_ success: Bool) -> Void) {
+        
+        guard (fetchedResultsController.fetchedObjects?.isEmpty)! else {
+            return
+        }
+        
+        for letter in alphabet {
+            print("downloading")
+            let debugImage = UIImage(named: letter)
+            if let debugImage = debugImage {
+                let imageData = UIImagePNGRepresentation(debugImage)
+                let photo = Photo(context: self.dataController.viewContext)
+                photo.imageData = imageData
+                photo.pin = self.pin
+                print("(photo.pin.coordinates.latitude, photo.pin.coordinate.longitude): (\(self.pin.coordinate.latitude), \(self.pin.coordinate.longitude))")
+                
+                do {
+                    try self.dataController.viewContext.save()
+                    print("saving JENN")
+                    completionHandler(true)
+                } catch {
+                    let alert = UIAlertController(title: "Cannot save photo", message: "Your photo cannot be saved at the moment", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alert.addAction(okAction)
+                    completionHandler(false)
+                }
+            }
+        }
+    }
+    
+
     fileprivate func updateCell(_ cell: ImageCollectionViewCell, _ imageData: Data) {
         cell.imageView.image = UIImage(data: imageData)
 //        cell.colorOverlay.backgroundColor = UIColor.rgb(red: 255, green: 255, blue: 255, alpha: 0)
@@ -390,11 +563,16 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         print("cellForItemAt called")
-//        collectionView.isScrollEnabled = false
+        var debugCounter = 1
+
+        
+      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ImageCollectionViewCell
+        
+    
+ 
+  
         
       
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ImageCollectionViewCell
        
     
 //        cell.colorOverlay.backgroundColor = cell.isChecked ? selectedOverlayColor : deselectedOverlayColor
@@ -404,23 +582,42 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
 //        print("indexPath: \(indexPath)")
 //
 //
-        let aPhoto = self.fetchedResultsController.object(at: indexPath)
         
+    //GUARD TO BE USED AND NEEDED
+        guard !(self.fetchedResultsController.fetchedObjects?.isEmpty)! else {
+
+            return cell
+        }
+//
+        // Download Photo Block
+        
+        let aPhoto = self.fetchedResultsController.object(at: indexPath)
+
         print("self.fetchedResultsController.fetchedObjects?.count in cellForItemAt: \(self.fetchedResultsController.fetchedObjects?.count)")
+        
+        if let imageCreationDate = aPhoto.creationDate {
+            print("Image Creation Date: \(imageCreationDate)")
+        }
 
         if let imageData = aPhoto.imageData {
             let image = UIImage(data: imageData)
             cell.imageView.image = image
             cell.colorOverlay.backgroundColor = UIColor.rgb(red: 255, green: 255, blue: 255, alpha: 0)
             
+        
+
 //            print("cell.isSelected: \(cell.isSelected)")
-            
+
             updateSelectUI(cell: cell)
-            
+
             cell.loader.stopAnimating()
         }
         
-          return cell
+    return cell
+      
+
+        
+        
 //
 // -------------------------------------------------------------------------
 //        guard !images.isEmpty else {
@@ -541,9 +738,11 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("didSelectItemAt: called")
-
+        
         let cell = collectionView.cellForItem(at: indexPath) as! ImageCollectionViewCell
         let selectedOverlayColor = UIColor.rgb(red: 242, green: 242, blue: 242, alpha: 0.85)
+        
+          print("indexPathsForSelectedItems at didSelectItemAt: \(collectionView.indexPathsForSelectedItems)")
       
         updateSelectUI(cell: cell)
         updateButtonLabel()
@@ -597,13 +796,11 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
 //
     func updateButtonLabel() {
         
-        print("collectionView.indexPathsForSelectedItems?.isEmpty: \(String(describing: collectionView.indexPathsForSelectedItems?.isEmpty))")
-        
         if (collectionView.indexPathsForSelectedItems?.isEmpty)! {
-            print("TRUE")
-            bottomButton.titleLabel?.text = "New Collection"
+            bottomButton.setTitle("New Collection", for: .normal)
+        } else {
+            bottomButton.setTitle("Remove Selected Images", for: .normal)
         }
-        
     }
     
  
@@ -618,6 +815,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
         layout.minimumLineSpacing = space
         layout.itemSize = CGSize(width: dimension, height: dimension)
         collectionView.collectionViewLayout = layout
+        
        
     }
 }
@@ -627,25 +825,42 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        print("indexPath in controller:didChange anObject: \(indexPath)")
+         print("newIndexPath in controller:didChange anObject: \(newIndexPath)")
+        
+
         switch type {
         case .insert:
             print("JENNN")
+            // Previously
             collectionView.insertItems(at: [newIndexPath!])
-         
             
+            
+            
+//            collectionView.reloadItems(at: [newIndexPath!])
+            if let fetchedObjects = controller.fetchedObjects {
+                if fetchedObjects.count == CollectionViewConstants.cellsCount {
+                    collectionView.isScrollEnabled = true
+                    ViewControllerConstants.alert.dismiss(animated: true, completion: nil)
+                    print("Scroll Enabled!")
+                }
+            }
+            
+            
+            print("newIndexPath: \(newIndexPath!)")
         
 //            cell.colorOverlay.backgroundColor = UIColor.rgb(red: 255, green: 255, blue: 255, alpha: 0)
 //            cell.loader.stopAnimating()
-            break
         case .delete:
-            break
+            collectionView.deleteItems(at: [indexPath!])
         case .update:
             collectionView.reloadItems(at: [newIndexPath!])
+            break
         default:
             break
         }
     }
-    
 }
 
 // -------------------------------------------------------------------------

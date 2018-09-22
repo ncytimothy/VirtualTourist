@@ -9,7 +9,8 @@
 import UIKit
 
 class ImageCollectionViewCell: UICollectionViewCell {
- 
+    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -35,7 +36,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     let colorOverlay: UIView = {
         let colorOverlay = UIView()
-        colorOverlay.backgroundColor = UIColor.rgb(red: 55, green: 54, blue: 56, alpha: 0.85)
+         colorOverlay.backgroundColor = UIColor.rgb(red: 55, green: 54, blue: 56, alpha: 0.85)
         return colorOverlay
     }()
     
