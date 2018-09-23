@@ -24,9 +24,7 @@ class FlickrClient: NSObject {
         
         // 1. BUILD THE URL, CONFIGURE THE REQUEST
         let request = URLRequest(url: flickrURL(parameters))
-        print("flickrURL(parameters): \(flickrURL(parameters))")
-        
-        
+       
         // 2. MAKE THE REQUEST
         let task = session.dataTask(with: request, completionHandler: {(data, response, error) in
             

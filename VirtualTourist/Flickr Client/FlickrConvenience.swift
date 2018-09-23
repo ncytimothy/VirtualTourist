@@ -40,12 +40,49 @@ extension FlickrClient {
                 print("Cannot get result!")
                 return
             }
+            
+            
            
             self.savePhotoToCoreData(result: result, dataController: dataController, pin: pin, { (success) in
                 if success {
                     completionHandlerForDownloadPhoto(true, "")
                 }
             })
+        })
+    }
+    
+    func downloadPhotoTest(latitude: Double, longitude: Double, dataController: DataController, pin: Pin, _ completionHandlerForDownloadPhoto: @escaping(_ success: Bool, _ image: UIImage?, _ errorString: String?) -> Void) {
+        
+        // 1. SPECIFY THE PARAMETERS
+        var parameters =
+            [Constants.FlickrParameterKeys.SafeSearch : Constants.FlickrParamterValues.UseSafeSearch,
+             Constants.FlickrParameterKeys.Extras : Constants.FlickrParamterValues.MediumURL,
+             Constants.FlickrParameterKeys.APIKey : Constants.FlickrParamterValues.APIKey,
+             Constants.FlickrParameterKeys.Method : Constants.FlickrParamterValues.SearchMethod,
+             Constants.FlickrParameterKeys.Format : Constants.FlickrParamterValues.ResponseFormat,
+             Constants.FlickrParameterKeys.NoJSONCallback : Constants.FlickrParamterValues.DisableJSONCallback,
+             Constants.FlickrParameterKeys.BoundingBox : bboxString(latitude: latitude, longitude: longitude)
+                ] as [String:AnyObject]
+        
+        var randomPage: String? = "1"
+        
+        // 2. MAKE THE REQUEST
+        let _ = taskForGETMethod(parameters, completionHandlerForGET: {(result, error) in
+            
+            // 3. SEND THE DESIRED VALUE(S) TO COMPLETION HANDLER
+            guard (error == nil) else {
+                completionHandlerForDownloadPhoto(false, nil, "Cannot download photos")
+                return
+            }
+            
+            // 4. ARE RESULTS RETURNED?
+            guard let result = result else {
+                print("Cannot get result!")
+                return
+            }
+            
+            let image = self.convertJSONToImage(result: result)
+            completionHandlerForDownloadPhoto(true, image, "")
         })
     }
     
@@ -84,8 +121,6 @@ extension FlickrClient {
         let minLong = max(longitude - Constants.Flickr.SearchBoxHalfWidth, Constants.Flickr.SearchLonRange.0)
         let maxLong = min(longitude + Constants.Flickr.SearchBoxHalfWidth, Constants.Flickr.SearchLonRange.1)
         
-        print("\(minLong), \(minLat), \(maxLong), \(maxLat)")
-        
         return "\(minLong), \(minLat), \(maxLong), \(maxLat)"
     }
     
@@ -101,19 +136,8 @@ extension FlickrClient {
            return images
         }
         
-                print("photoArray.count: \(photoArray.count)")
-      
-        
-        print("images.count: \(images.count)")
-        print("images: \(images)")
-        
-        //TODO: Get the random page as well
-//        let pages = photosDictionary[Constants.FlickrResponseKeys.Photos] as? Int // in the guard line above 
-//        let randomPage = Int(arc4random_uniform(UInt32(pages)))
-        
         while images.count < 21 {
             let photoIndex: Int = Int(arc4random_uniform(UInt32(photoArray.count)))
-            print("photoIndex: \(photoIndex)")
             let photoDictionary = photoArray[photoIndex] as [String:AnyObject]
             
             guard let imageURLString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
@@ -122,14 +146,9 @@ extension FlickrClient {
             }
             
             let imageURL = URL(string: imageURLString)
-//            print("imageURLString: \(imageURLString)")
             if let imageData = try? Data(contentsOf: imageURL!) {
                 image = UIImage(data: imageData)
-                print("image: \(String(describing: image))")
-                print("appending...")
-                
                 images.append(image)
-                print("images: \(images)")
             }
            
         }
@@ -147,11 +166,8 @@ extension FlickrClient {
             return image
         }
         
-        // Debug Messages
-        print("photoArray.count: \(photoArray.count)")
-        
+   
         let totalPages = photosDictionary[Constants.FlickrResponseKeys.Pages] as! Int
-        print("totalPages: \(totalPages)")
         
         let randomPage = Int(arc4random_uniform(UInt32(totalPages)))
         
@@ -190,8 +206,6 @@ extension FlickrClient {
             print("Cannot find keys '\(Constants.FlickrResponseKeys.Pages)' in \(result)")
             return randomPageString
         }
-        
-        print("totalPages: \(totalPages)")
         
         randomPage = Int(arc4random_uniform(UInt32(totalPages))) + 1
         randomPageString = String(randomPage!)

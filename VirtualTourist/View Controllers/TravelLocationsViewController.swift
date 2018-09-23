@@ -170,13 +170,11 @@ class TravelLocationsViewController: UIViewController {
         if sender.state != UIGestureRecognizerState.began { return }
         let touchLocation = sender.location(in: mapView)
         let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
-        print("Tapped at lat: \(locationCoordinate.latitude) long: \(locationCoordinate.longitude)")
         addPin(coordinate: locationCoordinate)
     }
     
     // MARK: - Add Pin
     func addPin(coordinate: CLLocationCoordinate2D) {
-        print("addPin called")
         
         // 1. ASSOCIATE PIN WITH THE DATA CONTROLLER'S VIEW CONTEXT
         let pin = Pin(context: dataController.viewContext)
@@ -265,7 +263,7 @@ extension TravelLocationsViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        print("Pin Tapped!")
+        
         
         let selectedAnnotation = view.annotation
         let selectedAnnotationLat = selectedAnnotation?.coordinate.latitude
@@ -277,7 +275,6 @@ extension TravelLocationsViewController: MKMapViewDelegate {
             for pin in result {
                 if pin.latitude == selectedAnnotationLat && pin.longitude == selectedAnnotationLong {
                     selectedPin = pin
-                    print("\(selectedPin.coordinate) in TravelLocationsVC")
                     prepare(pin: selectedPin) { (photoAlbumVC) in
                         self.navigationController?.pushViewController(photoAlbumVC, animated: true)
                     }
