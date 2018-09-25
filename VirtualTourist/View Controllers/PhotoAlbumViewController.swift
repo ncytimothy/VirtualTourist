@@ -83,6 +83,7 @@ class PhotoAlbumViewController: UIViewController {
         
         downloadPhotos()
         
+        
     }
     
     
@@ -322,17 +323,45 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
 
     }
     
+//    func addPhotoTest() {
+//        guard (fetchedResultsController.fetchedObjects?.isEmpty)! else {
+//            return
+//        }
+//
+//        FlickrClient.sharedInstance().downloadPhotoTest(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, dataController: dataController, pin: pin) { (success, image, error) in
+//            if success {
+//
+//
+//
+//                if let image = image {
+//                  let photo = Photo(context: self.dataController.viewContext)
+//                  photo.imageData = UIImagePNGRepresentation(image)
+//                  self.pin.addToPhotos(photo)
+//
+//                    do {
+//                        try self.dataController.viewContext.save()
+//                    } catch {
+//                        print("Cannot save photo!")
+//                        return
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
     func addPhoto() {
         
         guard (fetchedResultsController.fetchedObjects?.isEmpty)! else {
             return
         }
         
+        
+        
         FlickrClient.sharedInstance().downloadPhoto(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, dataController: dataController, pin: pin) { (success, error) in
 
             if success {
                 print("Success!")
-
+                
             }
         }
     }

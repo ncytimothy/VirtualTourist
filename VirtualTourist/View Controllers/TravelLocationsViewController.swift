@@ -8,12 +8,12 @@
 
 import UIKit
 import MapKit
-// IMPORT CORE DATA
+// Import Core Data
 import CoreData
 
 class TravelLocationsViewController: UIViewController {
 
-    // MARK: - Properties
+// MARK: - Properties
     @IBOutlet var mapView: MKMapView!
 
     // Data Controller property from AppDelegate.swift
@@ -26,16 +26,13 @@ class TravelLocationsViewController: UIViewController {
     @IBOutlet weak var deletePromptView: UIView!
     var deleteLabel: UILabel!
     
-    // FETCHED RESULTS CONTROLLER, SPECIFIED WITH ENTITY
+    // Fetched Results Controller, specified with an entity
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     
-    // SELECTED ANNOTATION POINT ANNOTATION
+    // Selected Point Annotation
     var selectedAnnotation: MKPointAnnotation?
     
-    // Alphabet Testing
-     let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V"]
-    
-    // MARK: Configure Delete Prompt
+// MARK: Configure Delete Prompt
     fileprivate func configureDeletePrompt() {
         /*
         * Set deletePromptView starting origin (in y) at the view's height
@@ -45,7 +42,7 @@ class TravelLocationsViewController: UIViewController {
         deletePromptView.frame.size.width = view.frame.size.width
     }
     
-    // MARK: - Configure Delete Label
+// MARK: - Configure Delete Label
     fileprivate func configureDeleteLabel() {
         /**
         * Create a label for the delete pins prompt
@@ -60,38 +57,39 @@ class TravelLocationsViewController: UIViewController {
         self.view.addSubview(deleteLabel)
     }
     
-//    // MARK: - FETCHED RESULTS CONTROLLER
+// MARK: - Fetched Results Controller
     fileprivate func setUpFetchedResultsController() {
 
-        // 1. CREATE FETCH REQUEST
-        // FETCH REQUESTS ARE GENERIC TYPES, SO YOU SPECIFY THE TYPE PARAMETER
-        // SPECIFYING THE TYPE PARAMETER WILL MAKE THE FETCH REQUEST
-        // WORK WITH A SPECIFIC MANAGED OBJECT SUBCLASS
-        // CALL THE TYPE FUNCTON FETCH REQUEST ON THAT SUBCLASS
+        // 1. Create Fetch Request
+        // Fetch Requests are Generic Types
+        // You specify the "Type" (entity name in angel brackets) in parameter
+        // Specifying the "Type" parameter will make the fetch request
+        // Work with a specifc managed object subclass
+        // Call the type's fetchRequest() method
         // Pin.fetchRequest() returns a fetch request initialized with the entity
         let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
 
-        // 2. CONFIGURE THE FETCH REQUEST BY ADDING A SORT RULE
+        // 2. Configure the fetch request by adding a sort rule
         // fetchRequest.sortDescriptors property takes an array of sort descriptors
+        // .sortDescriptors **MUST** be set on any NSFetchedResultsController instance
         let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
 
-        // 3. INSTANTIATE FETCHED RESULTS CONTROLLER WITH FETCH REQUEST
+        // 3. Instantiate fetched results controller with fetch request
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "pin")
 
-        // 4. SET THE FETCHED RESULTS CONTROLLER DELEGATE PROPERTY TO SELF
+        // 4. Set the fetched results controller delegate property to self
         fetchedResultsController.delegate = self
 
-        // 5. PERFORM FETCH TO LOAD DATA AND START TRACKING
+        // 5. Perform fetch to load data and start tracking
         do {
             try fetchedResultsController.performFetch()
         } catch {
             fatalError("The fetch cannot be performed: \(error.localizedDescription)")
         }
 
-        // 6. REMOVE THE FETCHED RESULTS CONTROLLER WHEN THE VIEW DISAPPEARS
-        // 7. IMPLEMENT DELEGATE METHODS FOR FETCHED RESULTS CONTROLLER TO TRACK CHANGES
-
+        // 6. Remove the Fetched Results Controller when the view disappears
+        // 7. Implement delegate confromance + methods for fetched results controller for UI updates (in an Extension)
 
     }
     
@@ -292,5 +290,4 @@ extension TravelLocationsViewController: MKMapViewDelegate {
         completionHandler(photoAlbumVC)
     }
 }
-
 
