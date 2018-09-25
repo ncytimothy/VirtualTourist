@@ -24,6 +24,7 @@ extension FlickrClient {
              Constants.FlickrParameterKeys.BoundingBox : bboxString(latitude: latitude, longitude: longitude)
         ] as [String:AnyObject]
         
+        
         var randomPage: String? = "1"
         
         // 2. MAKE THE REQUEST
@@ -41,13 +42,16 @@ extension FlickrClient {
                 return
             }
             
+// Now
+            let imageURL = self.convertJSONToURL(result: result)
+            print("FlickConvenience: downloadPhoto: imageURL: \(String(describing: imageURL))")
             
-           
-            self.savePhotoToCoreData(result: result, dataController: dataController, pin: pin, { (success) in
-                if success {
-                    completionHandlerForDownloadPhoto(true, "")
-                }
-            })
+// Previously
+//            self.savePhotoToCoreData(result: result, dataController: dataController, pin: pin, { (success) in
+//                if success {
+//                    completionHandlerForDownloadPhoto(true, "")
+//                }
+//            })
         })
     }
     
@@ -154,11 +158,39 @@ extension FlickrClient {
         }
         return images
     }
-
+    
+    func convertJSONToURL(result: AnyObject) -> URL? {
+        
+        print()
+        
+        var imageURL: URL? = nil
+        
+        // 1. Convert the JSON result to Photo Dictionaries and Photo Arrays
+        guard let photosDictionary = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
+            print("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' in \(result)")
+            return imageURL
+        }
+        
+        let photoIndex: Int = Int(arc4random_uniform(UInt32(photoArray.count)))
+        
+        if !photoArray.isEmpty {
+            let photoDictionary = photoArray[photoIndex] as [String:AnyObject]
+            
+            guard let imageURLString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
+                print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
+                return imageURL
+            }
+            
+            imageURL = URL(string: imageURLString)
+        }
+        return imageURL
+    }
     
     func convertJSONToImage(result: AnyObject) -> UIImage? {
         
         var image: UIImage? = nil
+        
+        print("convertJSONToImage: result: \(result)")
         
         // 1. CONVERT THE JSON RESULT TO PHOTO DICTIONARIES AND PHOTO ARRAYS
         guard let photosDictionary = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
