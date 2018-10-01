@@ -10,9 +10,12 @@ import UIKit
 import CoreData
 
 extension FlickrClient {
-    
-    func downloadPhoto(latitude: Double, longitude: Double, dataController: DataController, pin: Pin, _ completionHandlerForDownloadPhoto: @escaping(_ success: Bool, _ errorString: String?) -> Void) {
         
+    func downloadPhoto(latitude: Double, longitude: Double, dataController: DataController, pin: Pin, _ completionHandlerForDownloadPhoto: @escaping(_ success: Bool, _ errorString: String?) -> Void) {
+
+        var randomPage: Int = 1
+        var randomPageString: String = "1"
+
         // 1. SPECIFY THE PARAMETERS
         var parameters =
             [Constants.FlickrParameterKeys.SafeSearch : Constants.FlickrParamterValues.UseSafeSearch,
@@ -22,12 +25,8 @@ extension FlickrClient {
              Constants.FlickrParameterKeys.Format : Constants.FlickrParamterValues.ResponseFormat,
              Constants.FlickrParameterKeys.NoJSONCallback : Constants.FlickrParamterValues.DisableJSONCallback,
              Constants.FlickrParameterKeys.BoundingBox : bboxString(latitude: latitude, longitude: longitude)
-        ] as [String:AnyObject]
-        
-        
-        var randomPage: String? = "1"
-        
-        // 2. MAKE THE REQUEST
+                ] as [String:AnyObject]
+
         let _ = taskForGETMethod(parameters, completionHandlerForGET: {(result, error) in
             
             // 3. SEND THE DESIRED VALUE(S) TO COMPLETION HANDLER
@@ -41,82 +40,66 @@ extension FlickrClient {
                 print("Cannot get result!")
                 return
             }
-            
-// Now
-            let imageURL = self.convertJSONToURL(result: result)
-            print("FlickConvenience: downloadPhoto: imageURL: \(String(describing: imageURL))")
-            
-// Previously
-//            self.savePhotoToCoreData(result: result, dataController: dataController, pin: pin, { (success) in
-//                if success {
-//                    completionHandlerForDownloadPhoto(true, "")
-//                }
-//            })
+           
+            // 5. Produce Random Page
+            let totalPages = self.convertJSONToTotalPages(result: result)
+            if let totalPages = totalPages {
+                randomPage = Int(arc4random_uniform(UInt32(totalPages)))
+                randomPageString = String(randomPage)
+            }
+           
         })
-    }
-    
-    func downloadPhotoTest(latitude: Double, longitude: Double, dataController: DataController, pin: Pin, _ completionHandlerForDownloadPhoto: @escaping(_ success: Bool, _ image: UIImage?, _ errorString: String?) -> Void) {
         
-        // 1. SPECIFY THE PARAMETERS
-        var parameters =
-            [Constants.FlickrParameterKeys.SafeSearch : Constants.FlickrParamterValues.UseSafeSearch,
-             Constants.FlickrParameterKeys.Extras : Constants.FlickrParamterValues.MediumURL,
-             Constants.FlickrParameterKeys.APIKey : Constants.FlickrParamterValues.APIKey,
-             Constants.FlickrParameterKeys.Method : Constants.FlickrParamterValues.SearchMethod,
-             Constants.FlickrParameterKeys.Format : Constants.FlickrParamterValues.ResponseFormat,
-             Constants.FlickrParameterKeys.NoJSONCallback : Constants.FlickrParamterValues.DisableJSONCallback,
-             Constants.FlickrParameterKeys.BoundingBox : bboxString(latitude: latitude, longitude: longitude)
-                ] as [String:AnyObject]
-        
-        var randomPage: String? = "1"
-        
-        // 2. MAKE THE REQUEST
+        // 6. Append Random Page to Parameters
+        parameters[Constants.FlickrParameterKeys.Page] = randomPageString as AnyObject
+
+        // 7. Make another request with the random page
         let _ = taskForGETMethod(parameters, completionHandlerForGET: {(result, error) in
-            
-            // 3. SEND THE DESIRED VALUE(S) TO COMPLETION HANDLER
+
+            // 8. Check for errors
             guard (error == nil) else {
-                completionHandlerForDownloadPhoto(false, nil, "Cannot download photos")
+                completionHandlerForDownloadPhoto(false, "Cannot download photos")
                 return
             }
-            
-            // 4. ARE RESULTS RETURNED?
+
+            // 9. Are results returned?
             guard let result = result else {
                 print("Cannot get result!")
                 return
             }
-            
-            let image = self.convertJSONToImage(result: result)
-            completionHandlerForDownloadPhoto(true, image, "")
+
+            // 10. Save the photo with imageURL into Core Data
+            self.savePhotoToCoreData(result: result, dataController: dataController, pin: pin, { (success) in
+                if success {
+                    completionHandlerForDownloadPhoto(true, "")
+                }
+            })
         })
     }
     
-    
-    fileprivate func savePhotoToCoreData(result: AnyObject, dataController: DataController, pin: Pin, _ completionHandlerForSavePhotoToCoreData: @escaping(_ success: Bool) -> Void) {
-        // 8. Convert JSON to usable Foundation objects
-        let image = self.convertJSONToImage(result: result)
+    fileprivate func savePhotoToCoreData(result: AnyObject, dataController: DataController, pin: Pin, _ completionHandlerForSaveToCoreData: @escaping(_ success: Bool) -> Void) {
         
+        let imageURL = self.convertJSONToURL(result: result)
         
-        // 9. Create and Configure Photo Core Data Object
-        if let image = image {
+        if let imageURL = imageURL {
             let photo = Photo(context: dataController.viewContext)
-            photo.imageData = UIImagePNGRepresentation(image)
+            photo.imageURL = imageURL
+            photo.imageData = nil
             photo.creationDate = Date()
             photo.uuid = UUID().uuidString
             photo.pin = pin
-                
-            // 10. Save the Photo Core Data Object
+            
             do {
                 try dataController.viewContext.save()
-               completionHandlerForSavePhotoToCoreData(true)
             } catch {
                 let alert = UIAlertController(title: "Cannot save photo", message: "Your photo cannot be saved at the moment", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
             }
+            
         }
+        
     }
-    
-
     
     func bboxString(latitude: Double, longitude: Double) -> String {
         
@@ -128,44 +111,11 @@ extension FlickrClient {
         return "\(minLong), \(minLat), \(maxLong), \(maxLat)"
     }
     
-    func convertJSONToImages(result: AnyObject) -> [UIImage?] {
-        
-        var image: UIImage? = nil
-        var images: [UIImage?] = []
-     
-        
-        // 1. CONVERT THE JSON RESULT TO PHOTO DICTIONARIES AND PHOTO ARRAYS
-        guard let photosDictionary = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
-            print("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' in \(result)")
-           return images
-        }
-        
-        while images.count < 21 {
-            let photoIndex: Int = Int(arc4random_uniform(UInt32(photoArray.count)))
-            let photoDictionary = photoArray[photoIndex] as [String:AnyObject]
-            
-            guard let imageURLString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
-                print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
-                return images
-            }
-            
-            let imageURL = URL(string: imageURLString)
-            if let imageData = try? Data(contentsOf: imageURL!) {
-                image = UIImage(data: imageData)
-                images.append(image)
-            }
-           
-        }
-        return images
-    }
-    
-    func convertJSONToURL(result: AnyObject) -> URL? {
-        
-        print()
-        
+    fileprivate func convertJSONToURL(result: AnyObject) -> URL? {
+        // 1. Create the imageURL to be returned
         var imageURL: URL? = nil
         
-        // 1. Convert the JSON result to Photo Dictionaries and Photo Arrays
+        // 2. Convert the JSON result to Photo Dictionaries and Photo Arrays
         guard let photosDictionary = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
             print("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' in \(result)")
             return imageURL
@@ -181,70 +131,26 @@ extension FlickrClient {
                 return imageURL
             }
             
+            // For Debug purposes to get imageURL, use
+//            print("FlickrConvenience: convertJSONToURL: imageURLString: \(imageURLString)")
+            
             imageURL = URL(string: imageURLString)
         }
         return imageURL
     }
     
-    func convertJSONToImage(result: AnyObject) -> UIImage? {
+    fileprivate func convertJSONToTotalPages(result: AnyObject) -> Int? {
+        // 1. Create the totalPages to be returned
+        var totalPages: Int? = nil
         
-        var image: UIImage? = nil
-        
-        print("convertJSONToImage: result: \(result)")
-        
-        // 1. CONVERT THE JSON RESULT TO PHOTO DICTIONARIES AND PHOTO ARRAYS
-        guard let photosDictionary = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
-            print("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' in \(result)")
-            return image
+        // 2. Convert the JSON result to Photo Dictionaries and Photo Arrays
+        guard let photosDictionary = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let pages = photosDictionary[Constants.FlickrResponseKeys.Pages] as? Int else {
+            
+            return totalPages
         }
         
-   
-        let totalPages = photosDictionary[Constants.FlickrResponseKeys.Pages] as! Int
+        totalPages = pages
         
-        let randomPage = Int(arc4random_uniform(UInt32(totalPages)))
-        
-        
-        let photoIndex: Int = Int(arc4random_uniform(UInt32(photoArray.count)))
-        
-            if !photoArray.isEmpty {
-                let photoDictionary = photoArray[photoIndex] as [String:AnyObject]
-                
-                guard let imageURLString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
-                    print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
-                    return image
-                }
-                
-                let imageURL = URL(string: imageURLString)
-                print("imageURLString: \(imageURLString)")
-                if let imageData = try? Data(contentsOf: imageURL!) {
-                    image = UIImage(data: imageData)
-                }
-            }
-          return image
-        }
-    
-    func getRandomPage(result: AnyObject) -> String? {
-
-        var randomPage: Int? = nil
-        var randomPageString: String? = nil
-
-        // 1. Convert the JSON Result into Photo Dictionary
-        guard let photosDictionary = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject] else {
-            print("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' in \(result)")
-            return randomPageString
-        }
-        
-        guard let totalPages = photosDictionary[Constants.FlickrResponseKeys.Pages] as? Int else {
-            print("Cannot find keys '\(Constants.FlickrResponseKeys.Pages)' in \(result)")
-            return randomPageString
-        }
-        
-        randomPage = Int(arc4random_uniform(UInt32(totalPages))) + 1
-        randomPageString = String(randomPage!)
-        return randomPageString
-        
+        return totalPages
     }
 }
-
-
-

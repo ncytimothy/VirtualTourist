@@ -108,8 +108,6 @@ class TravelLocationsViewController: UIViewController {
         configureDeletePrompt()
         configureDeleteLabel()
         
-        
-       
     }
     
     override func viewWillAppear(_ animated: Bool) {

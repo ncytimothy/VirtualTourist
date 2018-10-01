@@ -55,8 +55,6 @@ class PhotoAlbumViewController: UIViewController {
     // FETCHED RESULTS CONTROLLER PERSISTS OVER THE LIFETIME OF THE VIEW CONTROLLER
     // NEED TO SPECIFY THE MANAGED OBJECT (GENERIC TYPE)
 
-    // Alphabet Debug Array
-    let alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V"]
     
 // -------------------------------------------------------------------------
 // MARK: - Lifecycle
@@ -65,6 +63,8 @@ class PhotoAlbumViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        var downloadCount: Int = 0
         
         // Set up collectionView
         collectionView.delegate = self
@@ -82,15 +82,16 @@ class PhotoAlbumViewController: UIViewController {
         collectionView?.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
         
         downloadPhotos()
-        
-        
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         collectionView.reloadData()
-      
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -116,9 +117,6 @@ class PhotoAlbumViewController: UIViewController {
         // 3b. Configure the Fetch Request with Sort Rules
         let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: true)
         
-        // Previously
-//        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: true)
-        
         fetchRequest.sortDescriptors = [sortDescriptor]
         
         // 3c. Instantiate the fetchResultsController using fetchRequest
@@ -142,7 +140,6 @@ class PhotoAlbumViewController: UIViewController {
 // -------------------------------------------------------------------------
 // MARK: - Helpers
     fileprivate func downloadPhotos() {
-        
         var downloadCount: Int = 0
         
         while downloadCount < CollectionViewConstants.cellsCount {
@@ -151,19 +148,7 @@ class PhotoAlbumViewController: UIViewController {
         }
         
     }
-    
-    fileprivate func presentLoadingAlert() {
-        
-        let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
-        loadingIndicator.hidesWhenStopped = true
-        loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
-        loadingIndicator.startAnimating()
-        
-        ViewControllerConstants.alert.view.addSubview(loadingIndicator)
-        present(ViewControllerConstants.alert, animated: true, completion: nil)
-        
-    }
-  
+
 // -------------------------------------------------------------------------
 // MARK: - Actions
     
@@ -323,76 +308,22 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
 
     }
     
-//    func addPhotoTest() {
-//        guard (fetchedResultsController.fetchedObjects?.isEmpty)! else {
-//            return
-//        }
-//
-//        FlickrClient.sharedInstance().downloadPhotoTest(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, dataController: dataController, pin: pin) { (success, image, error) in
-//            if success {
-//
-//
-//
-//                if let image = image {
-//                  let photo = Photo(context: self.dataController.viewContext)
-//                  photo.imageData = UIImagePNGRepresentation(image)
-//                  self.pin.addToPhotos(photo)
-//
-//                    do {
-//                        try self.dataController.viewContext.save()
-//                    } catch {
-//                        print("Cannot save photo!")
-//                        return
-//                    }
-//                }
-//            }
-//        }
-//    }
-    
     func addPhoto() {
         
+        // Try to put this guard statement back
         guard (fetchedResultsController.fetchedObjects?.isEmpty)! else {
             return
         }
         
-        
-        
         FlickrClient.sharedInstance().downloadPhoto(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, dataController: dataController, pin: pin) { (success, error) in
-
             if success {
                 print("Success!")
-                
             }
         }
     }
-  
-    func addPhoto(_ completionHandlerForAddPhoto: @escaping (_ success: Bool) -> Void) {
-
-        guard (fetchedResultsController.fetchedObjects?.isEmpty)! else {
-            return
-        }
-        
-            FlickrClient.sharedInstance().downloadPhoto(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, dataController: dataController, pin: pin) { (success, error) in
-
-                if success {
-                    print("Success!")
-                    completionHandlerForAddPhoto(true)
-                }
-        }
-    }
-    
-
-//    fileprivate func updateCell(_ cell: ImageCollectionViewCell, _ imageData: Data) {
-//        cell.imageView.image = UIImage(data: imageData)
-////        cell.colorOverlay.backgroundColor = UIColor.rgb(red: 255, green: 255, blue: 255, alpha: 0)
-//        cell.loader.stopAnimating()
-//    }
-    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        var debugCounter = 1
 
-        
       let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ImageCollectionViewCell
 
         
@@ -402,32 +333,63 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
         guard !(self.fetchedResultsController.fetchedObjects?.isEmpty)! else {
             return cell
         }
-
+    
         // Download Photo Block
         
         let aPhoto = self.fetchedResultsController.object(at: indexPath)
-
-        if let imageData = aPhoto.imageData {
-            let image = UIImage(data: imageData)
-            cell.imageView.image = image
-            cell.colorOverlay.backgroundColor = UIColor.rgb(red: 255, green: 255, blue: 255, alpha: 0)
-
-            updateSelectUI(cell: cell)
-
-            cell.loader.stopAnimating()
+        
+        if aPhoto.imageData == nil {
+            cell.checkmark.isHidden = true
+            cell.colorOverlay.backgroundColor = UIColor.rgb(red: 55, green: 54, blue: 56, alpha: 1)
+            cell.loader.startAnimating()
+            
+            DispatchQueue.global(qos: .background).async {
+                self.downloadImageData(imageURL: aPhoto.imageURL, completionHandlerForDownloadImageData: { (success, imageData, error) in
+                    if success {
+                        print("Success!")
+            
+                        performUIUpdatesOnMain {
+                            if let imageData = imageData {
+                                aPhoto.imageData = imageData
+                                
+                                do {
+                                    try self.dataController.viewContext.save()
+                                } catch {
+                                    print("Cannot save photo!")
+                                }
+                                let image = UIImage(data: imageData)
+                                cell.imageView.image = image
+                                cell.colorOverlay.backgroundColor = UIColor.rgb(red: 255, green: 255, blue: 255, alpha: 0)
+                                self.updateSelectUI(cell: cell)
+                                cell.loader.stopAnimating()
+                            }
+                        }
+                    }
+                })
+            }
         }
         
+        if aPhoto.imageData != nil {
+            
+            performUIUpdatesOnMain {
+                if let imageData = aPhoto.imageData {
+                    let image = UIImage(data: imageData)
+                    cell.imageView.image = image
+                    cell.colorOverlay.backgroundColor = UIColor.rgb(red: 255, green: 255, blue: 255, alpha: 0)
+                    self.updateSelectUI(cell: cell)
+                    cell.loader.stopAnimating()
+                }
+            }
+            
+        }
     return cell
 }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-       
-        
+    
         let cell = collectionView.cellForItem(at: indexPath) as! ImageCollectionViewCell
         let selectedOverlayColor = UIColor.rgb(red: 242, green: 242, blue: 242, alpha: 0.85)
         
-      
-      
         updateSelectUI(cell: cell)
         updateButtonLabel()
       
@@ -435,7 +397,6 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
 
     func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
         let cell = collectionView.cellForItem(at: indexPath) as! ImageCollectionViewCell
-        
         
         return true
     }
@@ -523,9 +484,12 @@ extension PhotoAlbumViewController {
         }
     }
     
+    func downloadImageData(imageURL: URL?, completionHandlerForDownloadImageData: @escaping(_ success: Bool, _ imageData: Data?, _ error: String?) -> Void) {
+        if let imageURL = imageURL, let imageData = try? Data(contentsOf: imageURL) {
+            completionHandlerForDownloadImageData(true, imageData, nil)
+        } else {
+            completionHandlerForDownloadImageData(false, nil, "Cannot download image!")
+        }
+    }
+    
 }
-
-
-
-
-

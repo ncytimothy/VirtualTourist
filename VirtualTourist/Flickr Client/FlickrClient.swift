@@ -16,17 +16,22 @@ class FlickrClient: NSObject {
     
     // URL Shared Session
     var session = URLSession.shared
+    
+    // Fixed Collection View Cells Count
+    enum CellConstants {
+        static let cellsCount: Int = 21
+    }
 //    
 // -------------------------------------------------------------------------
         
     // MARK: - GET
     func taskForGETMethod(_ parameters: [String:AnyObject], completionHandlerForGET: @escaping(_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask {
-        
+    
         // 1. BUILD THE URL, CONFIGURE THE REQUEST
         let request = URLRequest(url: flickrURL(parameters))
-       
-        // Debug
-        print("FlickrClient: flickrURL(parameters): \(flickrURL(parameters))")
+        
+        // If you like to get the API request URL for Debug purposes, use
+        // print("FlickrClient: flickrURL(parameters): \(flickrURL(parameters))")
         
         // 2. MAKE THE REQUEST
         let task = session.dataTask(with: request, completionHandler: {(data, response, error) in
