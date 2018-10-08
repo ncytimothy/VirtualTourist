@@ -31,13 +31,13 @@ class FlickrClient: NSObject {
         let request = URLRequest(url: flickrURL(parameters))
         
         // If you like to get the API request URL for Debug purposes, use
-        // print("FlickrClient: flickrURL(parameters): \(flickrURL(parameters))")
+        // debugPrint("FlickrClient: flickrURL(parameters): \(flickrURL(parameters))")
         
         // 2. MAKE THE REQUEST
         let task = session.dataTask(with: request, completionHandler: {(data, response, error) in
             
             func sendError(_ error: String) {
-                print(error)
+                debugPrint(error)
                 let userInfo = [NSLocalizedDescriptionKey : error]
                 completionHandlerForGET(nil, NSError(domain: "taskForGETMethod", code: 1, userInfo: userInfo))
             }

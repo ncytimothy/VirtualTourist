@@ -81,7 +81,7 @@ extension DataController {
         
         // 1. GUARD POSITIVE TIME INTERVALS
         guard interval > 0 else {
-            print("Cannot save negative intervals")
+            debugPrint("Cannot save negative intervals")
             return
         }
         

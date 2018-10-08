@@ -203,7 +203,7 @@ func deleteImages(completionHandler: @escaping(_ success: Bool) -> Void) {
                             try dataController.viewContext.save()
                             completionHandler(true)
                         } catch {
-                            print("Cannot delete photo!")
+                            debugPrint("Cannot delete photo!")
                             completionHandler(false)
                         }
                     }
@@ -231,7 +231,7 @@ func deleteImages(completionHandler: @escaping(_ success: Bool) -> Void) {
                 do {
                     try dataController.viewContext.save()
                 } catch {
-                    print("Cannot delete image!")
+                    debugPrint("Cannot delete image!")
                 }
             }
             collectionView.isScrollEnabled = true
@@ -296,12 +296,6 @@ extension PhotoAlbumViewController: MKMapViewDelegate {
 
 extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    //NEEDED
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return fetchedResultsController.sections?.count ?? 1
-        return 1
-    }
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
   
         return fetchedResultsController.sections?[section].numberOfObjects ?? CollectionViewConstants.cellsCount
@@ -317,7 +311,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
         
         FlickrClient.sharedInstance().downloadPhoto(latitude: pin.coordinate.latitude, longitude: pin.coordinate.longitude, dataController: dataController, pin: pin) { (success, error) in
             if success {
-                print("Success!")
+                debugPrint("Success!")
             }
         }
     }
@@ -346,7 +340,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
             DispatchQueue.global(qos: .background).async {
                 self.downloadImageData(imageURL: aPhoto.imageURL, completionHandlerForDownloadImageData: { (success, imageData, error) in
                     if success {
-                        print("Success!")
+                        debugPrint("Success!")
             
                         performUIUpdatesOnMain {
                             if let imageData = imageData {
@@ -355,7 +349,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
                                 do {
                                     try self.dataController.viewContext.save()
                                 } catch {
-                                    print("Cannot save photo!")
+                                    debugPrint("Cannot save photo!")
                                 }
                                 let image = UIImage(data: imageData)
                                 cell.imageView.image = image
@@ -380,7 +374,6 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
                     cell.loader.stopAnimating()
                 }
             }
-            
         }
     return cell
 }

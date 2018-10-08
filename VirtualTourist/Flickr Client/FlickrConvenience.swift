@@ -37,7 +37,7 @@ extension FlickrClient {
             
             // 4. ARE RESULTS RETURNED?
             guard let result = result else {
-                print("Cannot get result!")
+                debugPrint("Cannot get result!")
                 return
             }
            
@@ -64,7 +64,7 @@ extension FlickrClient {
 
             // 9. Are results returned?
             guard let result = result else {
-                print("Cannot get result!")
+                debugPrint("Cannot get result!")
                 return
             }
 
@@ -117,7 +117,7 @@ extension FlickrClient {
         
         // 2. Convert the JSON result to Photo Dictionaries and Photo Arrays
         guard let photosDictionary = result[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject], let photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
-            print("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' in \(result)")
+            debugPrint("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' in \(result)")
             return imageURL
         }
         
@@ -127,12 +127,12 @@ extension FlickrClient {
             let photoDictionary = photoArray[photoIndex] as [String:AnyObject]
             
             guard let imageURLString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
-                print("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
+                debugPrint("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
                 return imageURL
             }
             
             // For Debug purposes to get imageURL, use
-//            print("FlickrConvenience: convertJSONToURL: imageURLString: \(imageURLString)")
+//            debugPrint("FlickrConvenience: convertJSONToURL: imageURLString: \(imageURLString)")
             
             imageURL = URL(string: imageURLString)
         }
